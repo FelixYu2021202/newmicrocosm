@@ -68,11 +68,8 @@ class Entity {
     /**
      * @param {Entity} entity
      */
-    collide(entity) {
+    collide(entity, dealMap) {
         let collision = this.collisionBox.collide(entity.collisionBox);
-        if (collision.getlength() > 0 && this.friendship == "player" && entity.friendship == "enemy") {
-            debugger;
-        }
         if (this.type == "movable") {
             if (entity.type == "ghost") {
                 return collision;
@@ -86,7 +83,15 @@ class Entity {
             else {
                 if (collision.getlength() != 0) {
                     let force = new CollisionBox.Force(collision);
-                    force.setlength(Math.max(force.getlength() / 2, 50));
+                    let len = force.getlength() / 2;
+                    if (dealMap[this.friendship][entity.friendship])
+                    {
+                        force.setlength(Math.max(len, 50));
+                    }
+                    else
+                    {
+                        force.setlength(len);
+                    }
                     this.speed.pluse(force);
                 }
             }
@@ -109,15 +114,15 @@ class Entity {
      * @param {Entity} entity
      */
     collideWith(entity, dealMap) {
-        let collision = this.collide(entity);
+        let collision = this.collide(entity, dealMap);
         if (collision.getlength() != 0) {
             if (dealMap[this.friendship][entity.friendship]) {
                 this.health -= entity.bodyDamage;
-                // if (this.health <= 0) {
-                //     if (this.ws) {
-                //         this.ws.close(1000);
-                //     }
-                // }
+                if (this.health <= 0) {
+                    if (this.ws) {
+                        this.ws.close(1000);
+                    }
+                }
             }
         }
     }

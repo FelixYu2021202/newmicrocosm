@@ -29,7 +29,7 @@ function buildFromMap(m) {
     for (let x = 0; x < m.length; x++) {
         for (let y = 0; y < m.length; y++) {
             if (m[y][x] == "#") {
-                res.push(new Wall(new CollisionBox("r", x * width, y * width, width, width), 0, "static"));
+                res.push(new Wall(new CollisionBox("r", x * width, y * width, width + 10, width + 10), 0, "static"));
             }
         }
     }

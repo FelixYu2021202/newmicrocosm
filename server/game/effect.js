@@ -8,7 +8,7 @@ class Effect {
         let data = JSON.parse(json);
         Excel().then((dat) => {
             if (data.sight) {
-                sight = data.sight * dat.rarity[rarity].effect;
+                this.sight = data.sight * dat.rarity[rarity].effect;
             }
         });
     }

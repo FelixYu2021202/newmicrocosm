@@ -36,17 +36,17 @@ const drawer = {
     ctx: null,
 
     backgroundline() {
-        this.ctx.lineWidth = drawerdata.backgroundlinewidth;
-        this.ctx.strokeStyle = drawerdata.backgroundlinecolor;
-        for (let i = drawerdata.backgroundlinespace; i < this.cv.height; i += drawerdata.backgroundlinespace) {
-            this.line(0, i, this.cv.width, i);
-        }
-        for (let i = drawerdata.backgroundlinespace; i < this.cv.width; i += drawerdata.backgroundlinespace) {
-            this.ctx.beginPath();
-            this.ctx.moveTo(i, 0);
-            this.ctx.lineTo(i, this.cv.height);
-            this.ctx.stroke();
-        }
+        // this.ctx.lineWidth = drawerdata.backgroundlinewidth;
+        // this.ctx.strokeStyle = drawerdata.backgroundlinecolor;
+        // for (let i = drawerdata.backgroundlinespace; i < this.cv.height; i += drawerdata.backgroundlinespace) {
+        //     this.line(0, i, this.cv.width, i);
+        // }
+        // for (let i = drawerdata.backgroundlinespace; i < this.cv.width; i += drawerdata.backgroundlinespace) {
+        //     this.ctx.beginPath();
+        //     this.ctx.moveTo(i, 0);
+        //     this.ctx.lineTo(i, this.cv.height);
+        //     this.ctx.stroke();
+        // }
     },
 
     /**

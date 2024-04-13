@@ -85,7 +85,7 @@ class Force {
      */
     setlength(len) {
         if (this.x == 0 && this.y == 0) {
-            return;
+            return this;
         }
         let clen = this.getlength();
         return this.assign(this.mul(len / clen));

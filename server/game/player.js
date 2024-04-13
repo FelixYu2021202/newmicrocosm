@@ -84,7 +84,6 @@ class Player extends Entity {
 
     move() {
         this.collisionBox.pluse(this.#control);
-        // console.log(this.#control);
     }
 }
 

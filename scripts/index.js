@@ -77,7 +77,6 @@ function start() {
                     bcb = {
                         home() {
                             ws.close(1000);
-                            return gotoPage("home");
                         }
                     };
 
@@ -141,8 +140,10 @@ function start() {
                     }
 
                     ws.onclose = function (ev) {
+                        alert("You aborted / died.");
                         removeEventListener("keydown", keyHandlerDown);
                         removeEventListener("keyup", keyHandlerUp);
+                        gotoPage("home");
                     }
 
                     function draw() {
