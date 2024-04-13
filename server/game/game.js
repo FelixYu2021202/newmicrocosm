@@ -93,7 +93,10 @@ class Game {
  * @param {WebSocket} ws 
  */
 function send(game, ws) {
-    ws.send(JSON.stringify(game));
+    ws.send(JSON.stringify({
+        curdata: game,
+        type: "game"
+    }));
 }
 
 module.exports = Game;

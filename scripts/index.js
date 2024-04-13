@@ -89,6 +89,10 @@ function start() {
 
                     ws.onmessage = function (ev) {
                         curdata = JSON.parse(ev.data);
+                        let dat = JSON.parse(ev.data);
+                        if (dat.type == "game") {
+                            curdata = dat.curdata;
+                        }
                     }
 
                     let control = {
@@ -160,26 +164,7 @@ function start() {
                                 );
                             });
                             curdata.players.forEach(pl => {
-                                drawer.circle(
-                                    (pl.collisionBox.x - camera.x) * camera.rate + cv.width / 2,
-                                    (pl.collisionBox.y - camera.y) * camera.rate + cv.height / 2,
-                                    (pl.collisionBox.r) * camera.rate,
-                                    drawerdata.playercolor
-                                );
-                                drawer.text(
-                                    drawer.wrapnumber(pl.health),
-                                    (pl.collisionBox.x - camera.x) * camera.rate + cv.width / 2,
-                                    (pl.collisionBox.y - camera.y) * camera.rate + cv.height / 2 + 15,
-                                    "black",
-                                    50
-                                );
-                                drawer.text(
-                                    pl.name,
-                                    (pl.collisionBox.x - camera.x) * camera.rate + cv.width / 2,
-                                    (pl.collisionBox.y - camera.y - pl.collisionBox.r + 20) * camera.rate + cv.height / 2,
-                                    "black",
-                                    50
-                                );
+                                playerdrawer(pl, camera);
                             });
                             curdata.mobs.forEach(mob => {
                                 mobdrawer(mob, camera);
@@ -199,8 +184,8 @@ function start() {
 
                         if (ws.readyState == ws.OPEN) {
                             ws.send(JSON.stringify({
-                                x: 15 * (control.d - control.a),
-                                y: 15 * (control.s - control.w)
+                                x: control.d - control.a,
+                                y: control.s - control.w
                             }));
                         }
 

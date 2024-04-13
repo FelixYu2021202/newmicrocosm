@@ -79,6 +79,7 @@ class Player extends Entity {
         let self = this;
         this.ws.on("message", function (data) {
             self.#control.assign(JSON.parse(data));
+            self.#control.setlength(self.effect.speed);
         });
     }
 
