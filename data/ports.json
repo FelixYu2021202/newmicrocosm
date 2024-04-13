@@ -1,0 +1,5 @@
+{
+    "ip": "localhost",
+    "serverPort": "80",
+    "socketPort": "50003"
+}
