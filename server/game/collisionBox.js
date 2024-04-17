@@ -1,3 +1,5 @@
+// Supports web.
+
 class Force {
     /**
      * @type {number}
@@ -90,6 +92,13 @@ class Force {
         let clen = this.getlength();
         return this.assign(this.mul(len / clen));
     }
+
+    /**
+     * @param {Force} force
+     */
+    equals(force) {
+        return force.x == this.x && force.y == this.y;
+    }
 }
 
 class CollisionBox extends Force {
@@ -120,7 +129,7 @@ class CollisionBox extends Force {
      * @param {"r" | "c"} type
      * @param {number} x
      * @param {number} y
-     * @param {number} w
+     * @param {number} w or also r for circles
      * @param {number} h
      */
     constructor(type, x, y, w, h) {
@@ -169,7 +178,33 @@ class CollisionBox extends Force {
                 return b.collide(a).negate();
             }
             else {
-                return new Force(0, 0);
+                let l = b.x - b.w / 2, r = b.x + b.w / 2, d = b.y - b.h / 2, u = b.y + b.h / 2;
+                let res = new Force(Infinity, Infinity);
+                if (a.x + a.w / 2 <= l) {
+                    return new Force(0, 0);
+                }
+                else {
+                    res = res.min(new Force(l - a.x - a.w / 2, 0));
+                }
+                if (a.x - a.w / 2 >= r) {
+                    return new Force(0, 0);
+                }
+                else {
+                    res = res.min(new Force(r - a.x + a.w / 2, 0));
+                }
+                if (a.y + a.h / 2 <= d) {
+                    return new Force(0, 0);
+                }
+                else {
+                    res = res.min(new Force(0, d - a.y - a.h / 2));
+                }
+                if (a.y - a.h / 2 >= u) {
+                    return new Force(0, 0);
+                }
+                else {
+                    res = res.min(new Force(0, u - a.y + a.h / 2));
+                }
+                return res;
             }
         }
     }
@@ -183,8 +218,14 @@ function distance(a, b) {
     return Math.sqrt((a.x - b.x) ** 2 + (a.y - b.y) ** 2);
 }
 
-module.exports = CollisionBox;
+CollisionBox.Force = Force;
 
-module.exports.Force = Force;
+CollisionBox.distance = distance;
 
-module.exports.distance = distance;
+if (typeof module != "undefined") {
+    module.exports = CollisionBox;
+
+    module.exports.Force = Force;
+
+    module.exports.distance = distance;
+}

@@ -3,7 +3,7 @@ const path = require("path");
 const url = require("url");
 const fs = require("fs");
 
-const Excel = require("./game/excelparser");
+const Excel = require("./game/excel");
 
 /**
  * @param {string} an 

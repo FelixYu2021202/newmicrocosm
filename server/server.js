@@ -55,7 +55,7 @@ function load(req, res) {
         ".jpeg": "image/jpeg",
         ".jpg": "image/jpeg",
         ".js": "application/javascript",
-        ".json": "text/plain",
+        ".json": "application/json",
         ".png": "image/png"
     };
     const fld = {
@@ -68,7 +68,12 @@ function load(req, res) {
         ".json": "data",
         ".png": "pics",
     }
-    load_file(filePath, res, fld[extname], ctt[extname]);
+    if (extname != ".jss") {
+        load_file(filePath, res, fld[extname], ctt[extname]);
+    }
+    else {
+        load_file(filePath.substring(0, filePath.length - 1), res, "server", "application/javascript");
+    }
 }
 
 const server = http.createServer(load);

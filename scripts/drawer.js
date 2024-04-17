@@ -1,3 +1,7 @@
+if (false) {
+    const CollisionBox = require("../server/game/collisionBox");
+}
+
 class Vec2 {
     /**
      * @param {number} x
@@ -35,18 +39,28 @@ const drawer = {
      */
     ctx: null,
 
-    backgroundline() {
-        // this.ctx.lineWidth = drawerdata.backgroundlinewidth;
-        // this.ctx.strokeStyle = drawerdata.backgroundlinecolor;
-        // for (let i = drawerdata.backgroundlinespace; i < this.cv.height; i += drawerdata.backgroundlinespace) {
-        //     this.line(0, i, this.cv.width, i);
-        // }
-        // for (let i = drawerdata.backgroundlinespace; i < this.cv.width; i += drawerdata.backgroundlinespace) {
-        //     this.ctx.beginPath();
-        //     this.ctx.moveTo(i, 0);
-        //     this.ctx.lineTo(i, this.cv.height);
-        //     this.ctx.stroke();
-        // }
+    backgroundline(camera) {
+        if (!camera) {
+            camera = {
+                x: 0,
+                y: 0
+            }
+        }
+        camera = {
+            x: -camera.x - this.cv.width / 2,
+            y: -camera.y - this.cv.height / 2
+        }
+        this.ctx.lineWidth = drawerdata.backgroundlinewidth;
+        this.ctx.strokeStyle = drawerdata.backgroundlinecolor;
+
+        let bgls = drawerdata.backgroundlinespace;
+
+        for (let i = camera.y % bgls; i < this.cv.height; i += bgls) {
+            this.line(0, i, this.cv.width, i);
+        }
+        for (let i = camera.x % bgls; i < this.cv.width; i += bgls) {
+            this.line(i, 0, i, this.cv.height);
+        }
     },
 
     /**
@@ -83,10 +97,21 @@ const drawer = {
      * @param {string} color
      */
     circle(x, y, r, color) {
+        if (this.check(new CollisionBox("c", x, y, r))) {
+            return;
+        }
         this.ctx.fillStyle = color;
         this.ctx.beginPath();
         this.ctx.arc(x, y, r, 0, 2 * Math.PI);
         this.ctx.fill();
+    },
+
+    /**
+     * @param {CollisionBox} cb
+     */
+    check(cb) {
+        let cvb = new CollisionBox("r", this.cv.width / 2, this.cv.height / 2, this.cv.width, this.cv.height);
+        return cvb.collide(cb).getlength() == 0;
     },
 
     clear() {
@@ -136,6 +161,9 @@ const drawer = {
      * @param {string} color
      */
     rect(x, y, w, h, color) {
+        if (this.check(new CollisionBox("r", x + w / 2, y + h / 2, w, h))) {
+            return;
+        }
         this.ctx.fillStyle = color;
         this.ctx.fillRect(x, y, w, h);
     },
@@ -149,6 +177,9 @@ const drawer = {
      * @param {string} color
      */
     roundRect(x, y, w, h, color) {
+        if (this.check(new CollisionBox("r", x + w / 2, y + h / 2, w, h))) {
+            return;
+        }
         this.ctx.fillStyle = color;
         this.ctx.beginPath();
         this.ctx.roundRect(x, y, w, h, drawerdata.buttonradius);
@@ -170,6 +201,11 @@ const drawer = {
         this.ctx.font = `${size}px ${drawerdata.font}`;
         this.ctx.fillStyle = color;
         let siz = this.ctx.measureText(text);
+
+        if (this.check(new CollisionBox("r", x, y, siz, size))) {
+            return;
+        }
+
         this.ctx.fillText(text, x - siz.width / 2, y);
     },
 

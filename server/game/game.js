@@ -1,7 +1,7 @@
 const Wall = require("./wall.js");
 const Mob = require("./mob.js");
 const Player = require("./player.js");
-const Excel = require("./excelparser.js");
+const Excel = require("./excel.js");
 const WebSocket = require("ws");
 
 class Game {
@@ -104,5 +104,5 @@ module.exports = Game;
 module.exports.send = send;
 
 module.exports.games = {
-    GameLegacy: require("./legacy/legacy.js")
+    GameTag: require("./tag/tag.js")
 };

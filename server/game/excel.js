@@ -37,7 +37,7 @@ async function load(fn) {
         loaded: true
     };
     let book = await wb.xlsx.readFile(fn);
-    for (let key of ["mob", "drop", "level", "rarity", "legacy"]) {
+    for (let key of ["mob", "drop", "level", "rarity", "tag"]) {
         res[key] = parsesheet(book.getWorksheet(key));
     }
     return res;
@@ -47,9 +47,11 @@ let dat = {
     loaded: false
 };
 
-module.exports = async function requiredata() {
+const Excel = async function requiredata() {
     if (!dat.loaded) {
         dat = await load("./data/test.xlsx");
     }
     return dat;
 }
+
+module.exports = Excel;

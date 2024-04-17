@@ -1,8 +1,7 @@
 const Game = require("../game.js");
 const Wall = require("../wall.js");
-const Player = require("../player.js");
 const Mob = require("../mob.js");
-const Excel = require("../excelparser.js");
+const Excel = require("../excel.js");
 
 let dealMap = {
     enemy: {
@@ -45,7 +44,7 @@ function gen(size, rate) {
     return map;
 }
 
-class GameLegacy extends Game {
+class GameTag extends Game {
     /**
      * @param {string} rid
      */
@@ -53,8 +52,8 @@ class GameLegacy extends Game {
         super();
         this.rid = rid;
         this.open = true;
-        this.tid = "legacy";
-        this.walls = Wall.buildFromMap(gen(10));
+        this.tid = "tag";
+        this.walls = Wall.buildFromMap(gen(5));
         let self = this;
         function spawn() {
             Excel().then(dat => {
@@ -119,6 +118,6 @@ class GameLegacy extends Game {
     }
 }
 
-module.exports = GameLegacy;
+module.exports = GameTag;
 module.exports.dealMap = dealMap;
 module.exports.gen = gen;

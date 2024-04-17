@@ -14,8 +14,8 @@ function Camera() {
 let ports;
 
 function start() {
-    $.get("/ports.json", (dat) => {
-        ports = JSON.parse(dat);
+    $.get("/ports.json", dat => {
+        ports = dat;
     }).then(() => {
         $(() => {
             const cv = document.getElementsByTagName("canvas").item(0);
@@ -42,11 +42,11 @@ function start() {
                 home() {
                     console.log("home");
                     localStorage.setItem("page", "home");
-                    data = { legacy: false, siege: false };
-                    buttons = ["legacy", "siege"];
+                    data = { tag: false, siege: false };
+                    buttons = ["tag", "siege"];
                     bcb = {
-                        legacy() {
-                            return gotoPage("legacy");
+                        tag() {
+                            return gotoPage("tag");
                         },
                         siege() {
                             return gotoPage("siege");
@@ -60,19 +60,19 @@ function start() {
 
                         drawer.text("New Microcosm", cv.width / 2, 200, "blue", 100);
 
-                        frames.legacy = drawer.button("legacy", cv.width / 2 - 200, 325, "black", drawerdata.buttons.magenta[data.legacy], 40);
+                        frames.tag = drawer.button("tag", cv.width / 2 - 200, 325, "black", drawerdata.buttons.magenta[data.tag], 40);
                         frames.siege = drawer.button("siege", cv.width / 2 + 200, 325, "black", drawerdata.buttons.magenta[data.siege], 40);
 
                         currentFrame = requestAnimationFrame(home);
                     }
                 },
-                legacy() {
-                    console.log("legacy");
-                    localStorage.setItem("page", "legacy");
+                tag() {
+                    console.log("tag");
+                    localStorage.setItem("page", "tag");
                     data = { home: false };
                     buttons = ["home"];
 
-                    let ws = new WebSocket(`ws://${ports.ip}:${ports.socketPort}?type=GameLegacy&room=test&player=${user}`);
+                    let ws = new WebSocket(`ws://${ports.ip}:${ports.socketPort}?type=GameTag&room=test&player=${user}`);
 
                     bcb = {
                         home() {
@@ -154,6 +154,7 @@ function start() {
                         if (curdata.open) {
                             let player = curdata.players.find(p => p.name == user);
                             let camera = Camera.call(player);
+                            drawer.backgroundline(camera);
                             curdata.walls.forEach(wall => {
                                 drawer.rect(
                                     (wall.collisionBox.x - camera.x - wall.collisionBox.w / 2) * camera.rate + cv.width / 2,
@@ -172,11 +173,9 @@ function start() {
                         }
                     }
 
-                    return function legacy() {
+                    return function tag() {
                         frames = {};
                         drawer.clear();
-
-                        drawer.backgroundline();
 
                         draw();
 
@@ -189,7 +188,7 @@ function start() {
                             }));
                         }
 
-                        currentFrame = requestAnimationFrame(legacy);
+                        currentFrame = requestAnimationFrame(tag);
                     }
                 },
                 siege() {

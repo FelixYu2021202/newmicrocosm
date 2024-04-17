@@ -84,12 +84,10 @@ class Entity {
                 if (collision.getlength() != 0) {
                     let force = new CollisionBox.Force(collision);
                     let len = force.getlength() / 2;
-                    if (dealMap[this.friendship][entity.friendship])
-                    {
+                    if (dealMap[this.friendship][entity.friendship]) {
                         force.setlength(Math.max(len, 50));
                     }
-                    else
-                    {
+                    else {
                         force.setlength(len);
                     }
                     this.speed.pluse(force);
