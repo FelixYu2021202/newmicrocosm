@@ -1,6 +1,7 @@
 const CollisionBox = require("./collisionBox.js");
 const Effect = require("./effect.js");
 const Entity = require("./entity.js");
+const Game = require("./game.js");
 
 class Mob extends Entity {
     role = "mob";
@@ -47,7 +48,20 @@ class Mob extends Entity {
         this.effect = new Effect(data.mob[name].effect, rarity);
     }
 
-    move() { }
+    /**
+     * @param {Game} game
+     */
+    move(game) {
+        if (this.mobtype == "aggressive") {
+            let dis = new CollisionBox.Force(Infinity, Infinity);
+            let self = this;
+            game.players.forEach(pl => {
+                dis = dis.min(pl.collisionBox.minus(self.collisionBox));
+            });
+            dis.setlength(50);
+            this.speed.pluse(dis);
+        }
+    }
 }
 
 module.exports = Mob;

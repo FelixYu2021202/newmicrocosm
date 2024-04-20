@@ -4,6 +4,7 @@ const url = require("url");
 const fs = require("fs");
 
 const Excel = require("./game/excel");
+const PlayerData = require("./game/playerData");
 
 /**
  * @param {string} an 
@@ -17,6 +18,12 @@ function load_api(an, res, pu) {
         body += chunk;
     });
     res.req.on("end", () => {
+        if (body.startsWith("{")) {
+            body = JSON.parse(body);
+        }
+        else {
+            body = {};
+        }
         switch (parsed.base) {
             case "excel":
                 Excel().then(dat => {
@@ -25,6 +32,13 @@ function load_api(an, res, pu) {
                     });
                     res.end(JSON.stringify(dat));
                 });
+                break;
+            case "login":
+                res.writeHead(200, {
+                    "Content-Type": "text/plain"
+                });
+                res.end(PlayerData.login(body.user, body.perm).toString());
+                break;
         }
     });
 }

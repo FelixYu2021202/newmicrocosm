@@ -53,16 +53,27 @@ class GameTag extends Game {
         this.rid = rid;
         this.open = true;
         this.tid = "tag";
-        this.walls = Wall.buildFromMap(gen(5));
+
+        this.size = 60;
+
+        this.walls = Wall.buildFromMap(gen(this.size));
         let self = this;
-        function spawn() {
+        function spawnChest() {
             Excel().then(dat => {
-                self.mobs.push(new Mob(dat, "chest", 8, 500 + Math.random() * 30000, 500 + Math.random() * 30000));
+                self.mobs.push(new Mob(dat, "chest", 8, 500 + Math.random() * (self.size - 2) * 500, 500 + Math.random() * (self.size - 2) * 500));
             });
 
-            setTimeout(spawn, 4000);
+            setTimeout(spawnChest, 4000);
         }
-        spawn();
+        spawnChest();
+        function spawnBob() {
+            Excel().then(dat => {
+                self.mobs.push(new Mob(dat, "bob", 2, 500 + Math.random() * (self.size - 2) * 500, 500 + Math.random() * (self.size - 2) * 500))
+            });
+
+            setTimeout(spawnBob, 1000);
+        }
+        spawnBob();
     }
 
     getSpawnX() {
@@ -73,8 +84,12 @@ class GameTag extends Game {
         return 500;
     }
     update() {
+        let self = this;
         this.players.forEach(pl => {
-            pl.move();
+            pl.move(self);
+        });
+        this.mobs.forEach(mob => {
+            mob.move(self);
         });
         this.walls.forEach(wall => {
             this.mobs.forEach(mob => {

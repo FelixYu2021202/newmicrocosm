@@ -1,6 +1,7 @@
 const CollisionBox = require("./collisionBox.js");
 const PlayerData = require("./playerData.js");
 const Entity = require("./entity.js");
+const Game = require("./game.js");
 
 const WebSocket = require("ws");
 const Effect = require("./effect.js");
@@ -61,7 +62,6 @@ class Player extends Entity {
         super(new CollisionBox("c", x, y, 50), 0.9, "movable");
         this.name = name;
         let pd = PlayerData.get(name);
-        PlayerData.set(name, pd);
         this.level = pd.level;
         this.exp = pd.exp;
         this.health = data.level[this.level].health;
@@ -83,7 +83,10 @@ class Player extends Entity {
         });
     }
 
-    move() {
+    /**
+     * @param {Game} game
+     */
+    move(game) {
         this.collisionBox.pluse(this.#control);
     }
 }

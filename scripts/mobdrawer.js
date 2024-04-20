@@ -8,6 +8,17 @@ const mobdrawers = {
     /**
      * @param {Mob} mob
      */
+    bob(mob, camera) {
+        drawer.circle(
+            (mob.collisionBox.x - camera.x) * camera.rate + drawer.cv.width / 2,
+            (mob.collisionBox.y - camera.y) * camera.rate + drawer.cv.height / 2,
+            (mob.collisionBox.r) * camera.rate,
+            drawerdata.playercolor
+        );
+    },
+    /**
+     * @param {Mob} mob
+     */
     chest(mob, camera) {
         drawer.circle(
             (mob.collisionBox.x - camera.x) * camera.rate + drawer.cv.width / 2,

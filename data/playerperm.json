@@ -1,0 +1,12 @@
+{
+    "default_settings": {
+        "admin": {
+            "perm": "JCRhZG1pbg==",
+            "template": {
+                "level": 101,
+                "exp": 0
+            }
+        }
+    },
+    "player_perms": {}
+}
