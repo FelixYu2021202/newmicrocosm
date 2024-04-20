@@ -39,6 +39,12 @@ function load_api(an, res, pu) {
                 });
                 res.end(PlayerData.login(body.user, body.perm).toString());
                 break;
+            case "chperm":
+                res.writeHead(200, {
+                    "Content-Type": "text/plain"
+                });
+                res.end(PlayerData.chperm(body.user, body.perm).toString());
+                break;
         }
     });
 }

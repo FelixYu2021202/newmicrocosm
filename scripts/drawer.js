@@ -43,22 +43,20 @@ const drawer = {
         if (!camera) {
             camera = {
                 x: 0,
-                y: 0
+                y: 0,
+                rate: 1
             }
         }
-        camera = {
-            x: -camera.x - this.cv.width / 2,
-            y: -camera.y - this.cv.height / 2
-        }
-        this.ctx.lineWidth = drawerdata.backgroundlinewidth;
+        let pos = new Force(camera).mul(camera.rate).negate().minus(new Force(this.cv.width / 2, this.cv.height / 2));
+        this.ctx.lineWidth = drawerdata.backgroundlinewidth * camera.rate;
         this.ctx.strokeStyle = drawerdata.backgroundlinecolor;
 
-        let bgls = drawerdata.backgroundlinespace;
+        let bgls = drawerdata.backgroundlinespace * camera.rate;
 
-        for (let i = camera.y % bgls; i < this.cv.height; i += bgls) {
+        for (let i = pos.y % bgls; i < this.cv.height; i += bgls) {
             this.line(0, i, this.cv.width, i);
         }
-        for (let i = camera.x % bgls; i < this.cv.width; i += bgls) {
+        for (let i = pos.x % bgls; i < this.cv.width; i += bgls) {
             this.line(i, 0, i, this.cv.height);
         }
     },

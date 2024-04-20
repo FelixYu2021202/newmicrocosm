@@ -36,21 +36,21 @@ const mobdrawer = function (mob, camera) {
     mobdrawers[mob.name](mob, camera);
     drawer.text(drawer.wrapnumber(mob.health),
         (mob.collisionBox.x - camera.x) * camera.rate + drawer.cv.width / 2,
-        (mob.collisionBox.y - camera.y) * camera.rate + drawer.cv.height / 2 + 15,
+        (mob.collisionBox.y - camera.y) * camera.rate + drawer.cv.height / 2 + 15 * camera.rate,
         Excel.dat.rarity[mob.rarity].color,
-        50
+        50 * camera.rate
     );
     drawer.text(mob.name,
         (mob.collisionBox.x - camera.x) * camera.rate + drawer.cv.width / 2,
-        (mob.collisionBox.y - camera.y - mob.collisionBox.r) * camera.rate + drawer.cv.height / 2 - 10,
+        (mob.collisionBox.y - camera.y - mob.collisionBox.r) * camera.rate + drawer.cv.height / 2 - 10 * camera.rate,
         "black",
-        50
+        50 * camera.rate
     );
     drawer.text(Excel.dat.rarity[mob.rarity].name,
         (mob.collisionBox.x - camera.x) * camera.rate + drawer.cv.width / 2,
-        (mob.collisionBox.y - camera.y + mob.collisionBox.r) * camera.rate + drawer.cv.height / 2 + 10,
+        (mob.collisionBox.y - camera.y + mob.collisionBox.r) * camera.rate + drawer.cv.height / 2 + 10 * camera.rate,
         Excel.dat.rarity[mob.rarity].color,
-        50
+        50 * camera.rate
     )
 }
 
@@ -67,22 +67,22 @@ const playerdrawer = function (pl, camera) {
     drawer.text(
         drawer.wrapnumber(pl.health),
         (pl.collisionBox.x - camera.x) * camera.rate + drawer.cv.width / 2,
-        (pl.collisionBox.y - camera.y) * camera.rate + drawer.cv.height / 2 + 15,
+        (pl.collisionBox.y - camera.y) * camera.rate + drawer.cv.height / 2 + 15 * camera.rate,
         "black",
-        50
+        50 * camera.rate
     );
     drawer.text(
         pl.name,
         (pl.collisionBox.x - camera.x) * camera.rate + drawer.cv.width / 2,
         (pl.collisionBox.y - camera.y - pl.collisionBox.r - 10) * camera.rate + drawer.cv.height / 2,
         "black",
-        50
+        50 * camera.rate
     );
     drawer.text(
         `Lv. ${pl.level}`,
         (pl.collisionBox.x - camera.x) * camera.rate + drawer.cv.width / 2,
         (pl.collisionBox.y - camera.y + pl.collisionBox.r + 30) * camera.rate + drawer.cv.height / 2,
         "black",
-        50
+        50 * camera.rate
     )
 }

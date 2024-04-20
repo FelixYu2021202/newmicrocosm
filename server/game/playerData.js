@@ -21,6 +21,11 @@ function copy(obj) {
     return obj;
 }
 
+function updateData() {
+    fs.writeFile("./data/playerdata.json", JSON.stringify(pldata), "utf-8", Object);
+    fs.writeFile("./data/playerperm.json", JSON.stringify(plperm), "utf-8", Object);
+}
+
 function login(player, perm) {
     if (typeof plperm.player_perms[player] == "undefined") {
         let ds = plperm.default_settings;
@@ -28,20 +33,24 @@ function login(player, perm) {
             if (ds[tp].perm == btoa(perm)) {
                 pldata[player] = copy(ds[tp].template);
                 plperm.player_perms[player] = btoa(perm);
-                fs.writeFile("./data/playerdata.json", JSON.stringify(pldata), "utf-8", Object);
-                fs.writeFile("./data/playerperm.json", JSON.stringify(plperm), "utf-8", Object);
+                updateData();
                 return true;
             }
         }
         pldata[player] = create();
         plperm.player_perms[player] = btoa(perm);
-        fs.writeFile("./data/playerdata.json", JSON.stringify(pldata), "utf-8", Object);
-        fs.writeFile("./data/playerperm.json", JSON.stringify(plperm), "utf-8", Object);
+        updateData();
         return true;
     }
     if (plperm.player_perms[player] != btoa(perm)) {
         return false;
     }
+    return true;
+}
+
+function chperm(player, perm) {
+    plperm.player_perms[player] = btoa(perm);
+    updateData();
     return true;
 }
 
@@ -51,11 +60,12 @@ function get(player) {
 
 function set(player, data) {
     pldata[player] = data;
-    fs.writeFile("./data/playerdata.json", JSON.stringify(pldata), "utf-8", Object);
+    updateData();
 }
 
 module.exports = {
     login,
+    chperm,
     get,
     set,
 };

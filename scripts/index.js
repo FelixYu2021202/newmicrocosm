@@ -7,7 +7,7 @@ function Camera() {
     return {
         x: this.collisionBox.x,
         y: this.collisionBox.y,
-        rate: 1 / this.effect.sight,
+        rate: this.effect.rate,
     }
 }
 
@@ -39,17 +39,70 @@ function start() {
             let user = null;
 
             let pages = {
+                chperm() {
+                    if (user == null) {
+                        alert("Please log in first.");
+                        return gotoPage("home");
+                    }
+                    let perm = prompt("Please enter your new password/permission code:");
+                    let permcheck = prompt("Please check your new password/permission code:");
+                    while (permcheck != perm) {
+                        perm = permcheck;
+                        permcheck = prompt("Please check your new password/permission code:");
+                    }
+
+                    let changed = 0;
+
+                    $.post({
+                        url: "/api/chperm",
+                        data: `{"user":"${user}","perm":"${perm}"}`,
+                        success(dat) {
+                            if (dat == "true") {
+                                logged = 2;
+                            }
+                            else {
+                                logged = 1;
+                            }
+                            setTimeout(() => {
+                                gotoPage("home");
+                            }, 1000);
+                        }
+                    });
+
+                    return function chperm() {
+                        frames = {};
+                        drawer.clear();
+
+                        drawer.backgroundline();
+                        drawer.text("Change Password", cv.width / 2, 200, "black", 100);
+
+                        if (changed == 0) {
+                            drawer.text("Changing", cv.width / 2, cv.height / 2, "black", 80);
+                        }
+                        else if (changed == 2) {
+                            drawer.text("Changing succeeded", cv.width / 2, cv.height / 2, "black", 80);
+                        }
+                        else {
+                            drawer.text("Changing failed", cv.width / 2, cv.height / 2, "black", 80);
+                        }
+
+                        currentFrame = requestAnimationFrame(chperm);
+                    }
+                },
                 home() {
                     console.log("home");
                     localStorage.setItem("page", "home");
-                    data = { tag: false, login: false };
-                    buttons = ["tag", "login"];
+                    data = { tag: false, login: false, chperm: false };
+                    buttons = ["tag", "login", "chperm"];
                     bcb = {
                         tag() {
                             return gotoPage("tag");
                         },
                         login() {
                             return gotoPage("login");
+                        },
+                        chperm() {
+                            return gotoPage("chperm");
                         }
                     }
                     return function home() {
@@ -61,8 +114,10 @@ function start() {
                         drawer.text("New Microcosm", cv.width / 2, 200, "blue", 100);
                         drawer.text(`User: ${user}`, cv.width - drawer.measure(`User: ${user}`, 50) / 2, cv.height - 20, "black", 50);
 
-                        frames.tag = drawer.button("tag", cv.width / 2 - 200, 325, "black", drawerdata.buttons.magenta[data.tag], 40);
-                        frames.login = drawer.button("login", cv.width / 2 + 200, 325, "black", drawerdata.buttons.magenta[data.login], 40);
+                        frames.tag = drawer.button("tag", cv.width / 2, 325, "black", drawerdata.buttons.magenta[data.tag], 40);
+
+                        frames.login = drawer.button("log in", cv.width / 2 - 200, 500, "black", drawerdata.buttons.magenta[data.login], 40);
+                        frames.chperm = drawer.button("change pwd", cv.width / 2 + 200, 500, "black", drawerdata.buttons.magenta[data.chperm], 40);
 
                         currentFrame = requestAnimationFrame(home);
                     }
@@ -78,7 +133,7 @@ function start() {
                     let permcheck = prompt("Please check your password/permission code:");
                     while (permcheck != perm) {
                         perm = permcheck;
-                        permcheck = promt("Please check you password/permission code:");
+                        permcheck = prompt("Please check your password/permission code:");
                     }
 
                     let logged = 0;
@@ -161,6 +216,7 @@ function start() {
                          * @param {KeyboardEvent} ev
                          */
                         function keyHandlerDown(ev) {
+                            ev.key = ev.key.toLowerCase();
                             if (ev.key == "d") {
                                 control.d = true;
                             }
@@ -179,6 +235,7 @@ function start() {
                          * @param {KeyboardEvent} ev
                          */
                         function keyHandlerUp(ev) {
+                            ev.key = ev.key.toLowerCase();
                             if (ev.key == "a") {
                                 control.a = false;
                             }
@@ -199,10 +256,11 @@ function start() {
                         }
 
                         ws.onclose = function (ev) {
-                            alert("You aborted / died.");
                             removeEventListener("keydown", keyHandlerDown);
                             removeEventListener("keyup", keyHandlerUp);
-                            gotoPage("home");
+                            setTimeout(() => {
+                                gotoPage("home");
+                            }, 200);
                         }
 
                         function draw() {

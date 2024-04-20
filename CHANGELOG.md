@@ -24,3 +24,8 @@
 
 - Added a new mob (bob).
 - Created password/permission code system.
+
+## Prefab-v0.0.2-1 optimized rendering, perm system
+
+- Added password changing system.
+- Optimized rendering.
