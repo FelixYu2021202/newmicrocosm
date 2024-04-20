@@ -11,7 +11,64 @@ function Camera() {
     }
 }
 
+function checkUser(user) {
+    return user.match(/^[_\w]+$/) && user.length > 2 && user.length < 16;
+}
+
+function checkPerm(perm) {
+    let includes = 0;
+    if (perm.match(/[\!\@\#\$\%\^\&\*\_\+\-\=]/)) {
+        includes++;
+    }
+    if (perm.match(/[\(\)\[\]\{\}\;\'\:\"\,\.\/\?\~\`\\]/)) {
+        includes++;
+    }
+    if (perm.match(/[0-9]/)) {
+        includes++;
+    }
+    if (perm.match(/[a-z]/)) {
+        includes++;
+    }
+    if (perm.match(/[A-Z]/)) {
+        includes++;
+    }
+    return includes > 1 && perm.match(/^[\!\@\#\$\%\^\&\*\_\+\-\=\(\)\[\]\{\}\;\'\:\"\,\.\/\?\~\`\\0-9a-zA-Z]+$/) && perm.length > 5 && perm.length < 41;
+}
+
+function queryValidUser(message) {
+    let user = prompt(message);
+    while (!checkUser(user)) {
+        user = prompt(`${message}
+A valid username should follow the rules:
+- its length is between [3, 15] inclusive.
+- it should only include the listed characters below:
+  - 0123456789
+  - abcdefghijklmnopqrstuvwxyz
+  - ABCDEFGHIJKLMNOPQRSTUVWXYZ`);
+    }
+    return user;
+}
+
+function queryValidPerm(message) {
+    let perm = prompt(message);
+    while (!checkPerm(perm)) {
+        perm = prompt(`${message}
+A valid perm should follow the rules:
+- its length is between [6, 40] inclusive.
+- it should include the following types of characters at least two:
+  - !@#$%^&*_+-=
+  - ()[]{};':",./?~\`\\
+  - 0123456789
+  - abcdefghijklmnopqrstuvwxyz
+  - ABCDEFGHIJKLMNOPQRSTUVWXYZ
+- it should only include the listed characters above.`);
+    }
+    return perm;
+}
+
 let ports;
+
+let domain = location.toString().match(/^http:\/\/([^:^/]+)/)[1];
 
 function start() {
     $.get("/ports.json", dat => {
@@ -23,32 +80,41 @@ function start() {
             const rect = cv.getBoundingClientRect();
 
             drawer.test();
-
             drawer.init();
 
             let currentFrame = 0;
 
             let data = {};
-
             let frames = {};
-
             let buttons = [];
-
             let bcb = {};
 
             let user = null;
+            let cuser = localStorage.getItem("user");
+            if (cuser && localStorage.getItem("perm")) {
+                let perm = atob(localStorage.getItem("perm"));
+                $.post({
+                    url: "/api/login",
+                    data: `{"user":"${cuser}","perm":"${perm}"}`,
+                    success(dat) {
+                        if (dat == "true") {
+                            user = cuser;
+                        }
+                    }
+                });
+            }
 
-            let pages = {
+            const pages = {
                 chperm() {
                     if (user == null) {
                         alert("Please log in first.");
                         return gotoPage("home");
                     }
-                    let perm = prompt("Please enter your new password/permission code:");
-                    let permcheck = prompt("Please check your new password/permission code:");
+                    let perm = queryValidPerm("Please enter your new password/permission code:");
+                    let permcheck = queryValidPerm("Please check your new password/permission code:");
                     while (permcheck != perm) {
                         perm = permcheck;
-                        permcheck = prompt("Please check your new password/permission code:");
+                        permcheck = queryValidPerm("Please check your new password/permission code:");
                     }
 
                     let changed = 0;
@@ -58,10 +124,11 @@ function start() {
                         data: `{"user":"${user}","perm":"${perm}"}`,
                         success(dat) {
                             if (dat == "true") {
-                                logged = 2;
+                                changed = 2;
+                                localStorage.setItem("perm", btoa(perm));
                             }
                             else {
-                                logged = 1;
+                                changed = 1;
                             }
                             setTimeout(() => {
                                 gotoPage("home");
@@ -128,12 +195,12 @@ function start() {
                     buttons = [];
                     bcb = {};
 
-                    let cuser = prompt("Please enter your username:");
-                    let perm = prompt("Please enter your password/permission code:");
-                    let permcheck = prompt("Please check your password/permission code:");
+                    let cuser = queryValidUser("Please enter your username:");
+                    let perm = queryValidPerm("Please enter your password/permission code:");
+                    let permcheck = queryValidPerm("Please check your password/permission code:");
                     while (permcheck != perm) {
                         perm = permcheck;
-                        permcheck = prompt("Please check your password/permission code:");
+                        permcheck = queryValidPerm("Please check your password/permission code:");
                     }
 
                     let logged = 0;
@@ -145,6 +212,8 @@ function start() {
                             if (dat == "true") {
                                 logged = 2;
                                 user = cuser;
+                                localStorage.setItem("user", user);
+                                localStorage.setItem("perm", btoa(perm));
                             }
                             else {
                                 logged = 1;
@@ -182,7 +251,7 @@ function start() {
                         data = { home: false };
                         buttons = ["home"];
 
-                        let ws = new WebSocket(`ws://${ports.ip}:${ports.socketPort}?type=GameTag&room=test&player=${user}`);
+                        let ws = new WebSocket(`ws://${domain}:${ports.socketPort}?type=GameTag&room=test&player=${user}`);
 
                         bcb = {
                             home() {

@@ -58,7 +58,7 @@ class Mob extends Entity {
             game.players.forEach(pl => {
                 dis = dis.min(pl.collisionBox.minus(self.collisionBox));
             });
-            dis.setlength(50);
+            dis.setlength(22);
             this.speed.pluse(dis);
         }
     }

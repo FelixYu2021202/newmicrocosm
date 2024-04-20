@@ -29,3 +29,8 @@
 
 - Added password changing system.
 - Optimized rendering.
+
+## Prefab-v0.0.2-2 changed mob, perm check
+
+- Added user & pwd validation check.
+- Changed mob moving speed.

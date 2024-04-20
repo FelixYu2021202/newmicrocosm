@@ -68,10 +68,10 @@ class GameTag extends Game {
         spawnChest();
         function spawnBob() {
             Excel().then(dat => {
-                self.mobs.push(new Mob(dat, "bob", 2, 500 + Math.random() * (self.size - 2) * 500, 500 + Math.random() * (self.size - 2) * 500))
+                self.mobs.push(new Mob(dat, "bob", 1, 500 + Math.random() * (self.size - 2) * 500, 500 + Math.random() * (self.size - 2) * 500))
             });
 
-            setTimeout(spawnBob, 1000);
+            setTimeout(spawnBob, 2000);
         }
         spawnBob();
     }
