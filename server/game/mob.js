@@ -39,7 +39,7 @@ class Mob extends Entity {
         this.name = name;
         this.health = data.mob[name].health * data.rarity[rarity].health;
         this.bodyDamage = data.mob[name].bodyDamage * data.rarity[rarity].damage;
-        this.exp = data.mob[name].exp;
+        this.exp = data.mob[name].exp * data.rarity[rarity].exp;
         this.effect = JSON.parse(data.mob[name].effect);
         this.friendship = data.mob[name].friendship;
         this.mobtype = data.mob[name].mobtype;
@@ -60,6 +60,44 @@ class Mob extends Entity {
             });
             dis.setlength(22);
             this.speed.pluse(dis);
+        }
+    }
+
+    playerdealts = {};
+
+    /**
+     * @param {Entity} entity
+     */
+    addDamage(entity) {
+        if (entity.role == "player") { // body damage
+            if (this.playerdealts[entity.name] == undefined) {
+                this.playerdealts[entity.name] = 0;
+            }
+            this.playerdealts[entity.name] += entity.bodyDamage;
+        }
+    }
+
+    /**
+     * @param {Game} game
+     */
+    reward(game) {
+        let dealts = [];
+        for (let pl in this.playerdealts) {
+            dealts.push({
+                dmg: this.playerdealts[pl],
+                pl
+            });
+        }
+        dealts = dealts.sort((a, b) => a.dmg - b.dmg);
+        for (let i = 0; i < Math.min(4, dealts.length); i++) {
+            game.players.forEach(pl => {
+                if (pl.name == dealts[i].pl) {
+                    pl.exp += this.exp;
+                    while (pl.exp >= Excel.dat.level[pl.level + 1].exp) {
+                        pl.exp -= Excel.dat.level[++pl.level].exp;
+                    }
+                }
+            });
         }
     }
 }

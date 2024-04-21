@@ -8,17 +8,26 @@ let dealMap = {
         enemy: false,
         friend: true,
         player: true,
+        none: false,
     },
     friend: {
         enemy: true,
         friend: false,
         player: false,
+        none: false,
     },
     player: {
         enemy: true,
         friend: false,
         player: true,
+        none: false,
     },
+    none: {
+        enemy: false,
+        friend: false,
+        player: false,
+        none: false
+    }
 };
 
 function gen(size, rate) {
@@ -71,7 +80,7 @@ class GameTag extends Game {
                 self.mobs.push(new Mob(dat, "bob", 1, 500 + Math.random() * (self.size - 2) * 500, 500 + Math.random() * (self.size - 2) * 500))
             });
 
-            setTimeout(spawnBob, 2000);
+            setTimeout(spawnBob, 2500);
         }
         spawnBob();
     }
@@ -93,30 +102,30 @@ class GameTag extends Game {
         });
         this.walls.forEach(wall => {
             this.mobs.forEach(mob => {
-                wall.collideWith(mob, dealMap);
-                mob.collideWith(wall, dealMap);
+                wall.collideWith(mob, dealMap, this);
+                mob.collideWith(wall, dealMap, this);
             });
             this.players.forEach(player => {
-                wall.collideWith(player, dealMap);
-                player.collideWith(wall, dealMap);
+                wall.collideWith(player, dealMap, this);
+                player.collideWith(wall, dealMap, this);
             });
         });
         this.mobs.forEach(mob => {
             this.players.forEach(player => {
-                mob.collideWith(player, dealMap);
-                player.collideWith(mob, dealMap);
+                mob.collideWith(player, dealMap, this);
+                player.collideWith(mob, dealMap, this);
             });
         });
         for (let i = 0; i < this.mobs.length; i++) {
             for (let j = i + 1; j < this.mobs.length; j++) {
-                this.mobs[i].collideWith(this.mobs[j], dealMap);
-                this.mobs[j].collideWith(this.mobs[i], dealMap);
+                this.mobs[i].collideWith(this.mobs[j], dealMap, this);
+                this.mobs[j].collideWith(this.mobs[i], dealMap, this);
             }
         }
         for (let i = 0; i < this.players.length; i++) {
             for (let j = i + 1; j < this.players.length; j++) {
-                this.players[i].collideWith(this.players[j], dealMap);
-                this.players[j].collideWith(this.players[i], dealMap);
+                this.players[i].collideWith(this.players[j], dealMap, this);
+                this.players[j].collideWith(this.players[i], dealMap, this);
             }
         }
         this.walls.forEach(wall => {

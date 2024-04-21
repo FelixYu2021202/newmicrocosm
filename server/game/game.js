@@ -68,7 +68,7 @@ class Game {
         setTimeout(function () {
             self.registered = false;
             self.run();
-        }, 42);
+        }, 21);
     }
 
     update() { }

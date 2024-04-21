@@ -50,12 +50,8 @@ class Player extends Entity {
      */
     #ws;
 
-    get ws() {
+    get ws() { // readonly
         return this.#ws;
-    }
-
-    set ws(ws) {
-        this.#ws = ws;
     }
 
     constructor(data, name, x, y, ws) {
@@ -69,7 +65,13 @@ class Player extends Entity {
 
         this.effect = new Effect(data.level[this.level].effect, 1);
 
-        this.ws = ws;
+        this.#ws = ws;
+        this.#ws.on("close", () => {
+            PlayerData.set(this.name, {
+                level: this.level,
+                exp: this.exp
+            });
+        });
         this.registerControl();
     }
 

@@ -1,6 +1,8 @@
 if (false) {
     const Player = require("../server/game/player.js");
     const Mob = require("../server/game/mob.js");
+    const { Force } = require("../server/game/collisionBox.js");
+    const Game = require("../server/game/game.js");
 }
 
 const mobdrawers = {
@@ -56,8 +58,10 @@ const mobdrawer = function (mob, camera) {
 
 /**
  * @param {Player} pl
+ * @param {Force} camera
+ * @param {string} game
  */
-const playerdrawer = function (pl, camera) {
+const playerdrawer = function (pl, camera, game) {
     drawer.circle(
         (pl.collisionBox.x - camera.x) * camera.rate + drawer.cv.width / 2,
         (pl.collisionBox.y - camera.y) * camera.rate + drawer.cv.height / 2,
@@ -78,11 +82,22 @@ const playerdrawer = function (pl, camera) {
         "black",
         50 * camera.rate
     );
-    drawer.text(
-        `Lv. ${pl.level}`,
-        (pl.collisionBox.x - camera.x) * camera.rate + drawer.cv.width / 2,
-        (pl.collisionBox.y - camera.y + pl.collisionBox.r + 30) * camera.rate + drawer.cv.height / 2,
-        "black",
-        50 * camera.rate
-    )
+    if (game == "tag") {
+        drawer.text(
+            pl.level == 101 ? "Catcher" : "Escapee",
+            (pl.collisionBox.x - camera.x) * camera.rate + drawer.cv.width / 2,
+            (pl.collisionBox.y - camera.y + pl.collisionBox.r + 30) * camera.rate + drawer.cv.height / 2,
+            "black",
+            50 * camera.rate
+        )
+    }
+    else {
+        drawer.text(
+            `Lv. ${pl.level}`,
+            (pl.collisionBox.x - camera.x) * camera.rate + drawer.cv.width / 2,
+            (pl.collisionBox.y - camera.y + pl.collisionBox.r + 30) * camera.rate + drawer.cv.height / 2,
+            "black",
+            50 * camera.rate
+        );
+    }
 }

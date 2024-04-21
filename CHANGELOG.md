@@ -1,6 +1,6 @@
 # Change Logs
 
-## Prefab-v0.0.0
+## Prefab-v0.0.0 start
 
 - Created game.
 
@@ -9,7 +9,7 @@
 - Added health & damage calculations.
 - Added a mob (chest).
 
-## Prefab-v0.0.1
+## Prefab-v0.0.1 gen
 
 - Added map gen.
 - Updated method of player drawing.
@@ -20,7 +20,7 @@
 - Optimized Drawing.
 - Optimized game structure.
 
-## Prefab-v0.0.2
+## Prefab-v0.0.2 perm
 
 - Added a new mob (bob).
 - Created password/permission code system.
@@ -34,3 +34,8 @@
 
 - Added user & pwd validation check.
 - Changed mob moving speed.
+
+## Prefab-v0.0.3 level
+
+- Added level system.
+- Adjusted mob data.

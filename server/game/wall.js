@@ -4,7 +4,7 @@ const Entity = require("./entity");
 
 class Wall extends Entity { // Just a wall.
     role = "wall";
-    friendship = "friend";
+    friendship = "none";
     health = 1e100;
     bodyDamage = 0;
 

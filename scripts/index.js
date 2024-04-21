@@ -347,11 +347,14 @@ function start() {
                                     );
                                 });
                                 curdata.players.forEach(pl => {
-                                    playerdrawer(pl, camera);
+                                    playerdrawer(pl, camera, curdata.tid);
                                 });
                                 curdata.mobs.forEach(mob => {
                                     mobdrawer(mob, camera);
                                 });
+                                drawer.roundRect(cv.width - 600, cv.height - 75, 600, 50, "black");
+                                drawer.roundRect(cv.width - 590, cv.height - 70, 580 * player.exp / Excel.dat.level[player.level + 1].exp, 40, "yellow");
+                                drawer.text(`Lv. ${player.level}: ${drawer.wrapnumber(player.exp)} / ${drawer.wrapnumber(Excel.dat.level[player.level + 1].exp)}`, cv.width - 300, cv.height - 40, "grey", 30);
                             }
                         }
 
@@ -391,9 +394,9 @@ function start() {
             }
 
             let page = localStorage.getItem("page");
-            if (!page) {
-                page = "home";
-            }
+            // if (!page) {
+            page = "home";
+            // }
 
             gotoPage(page);
 
@@ -405,16 +408,27 @@ function start() {
                 x = x / innerWidth * drawerdata.windowwidth;
                 let y = ev.clientY - rect.top;
                 y = y / innerWidth * drawerdata.windowwidth;
+                let on = false;
                 buttons.forEach(val => {
+                    if (movepaused) {
+                        return;
+                    }
                     if (frames[val].l <= x && x <= frames[val].r && frames[val].u <= y && y <= frames[val].d) {
                         if (!data[val]) {
                             data[val] = true;
                         }
+                        on = true;
                     }
                     else if (data[val]) {
                         data[val] = false;
                     }
                 });
+                if (on) {
+                    cv.style.cursor = "pointer";
+                }
+                else {
+                    cv.style.cursor = "default";
+                }
             });
 
             cv.addEventListener("click", ev => {

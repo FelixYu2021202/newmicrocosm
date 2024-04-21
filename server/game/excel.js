@@ -43,15 +43,15 @@ async function load(fn) {
     return res;
 }
 
-let dat = {
+const Excel = async function requiredata() {
+    if (!Excel.dat.loaded) {
+        Excel.dat = await load("./data/test.xlsx");
+    }
+    return Excel.dat;
+}
+
+Excel.dat = {
     loaded: false
 };
-
-const Excel = async function requiredata() {
-    if (!dat.loaded) {
-        dat = await load("./data/test.xlsx");
-    }
-    return dat;
-}
 
 module.exports = Excel;

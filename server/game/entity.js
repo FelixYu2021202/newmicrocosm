@@ -1,5 +1,7 @@
 const CollisionBox = require("./collisionBox.js");
+const PlayerData = require("./playerData.js");
 const Effect = require("./effect.js");
+const Game = require("./game.js");
 
 class Entity {
     /**
@@ -110,15 +112,22 @@ class Entity {
 
     /**
      * @param {Entity} entity
+     * @param {Game} game
      */
-    collideWith(entity, dealMap) {
+    collideWith(entity, dealMap, game) {
         let collision = this.collide(entity, dealMap);
         if (collision.getlength() != 0) {
             if (dealMap[this.friendship][entity.friendship]) {
                 this.health -= entity.bodyDamage;
+                if (this.role == "mob") {
+                    this.addDamage(entity);
+                }
                 if (this.health <= 0) {
-                    if (this.ws) {
+                    if (this.ws) { // player
                         this.ws.close(1000);
+                    }
+                    if (this.reward) { // mob
+                        this.reward(game);
                     }
                 }
             }
