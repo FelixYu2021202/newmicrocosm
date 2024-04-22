@@ -1,5 +1,4 @@
 const CollisionBox = require("./collisionBox.js");
-const PlayerData = require("./playerData.js");
 const Effect = require("./effect.js");
 const Game = require("./game.js");
 
@@ -86,8 +85,8 @@ class Entity {
                 if (collision.getlength() != 0) {
                     let force = new CollisionBox.Force(collision);
                     let len = force.getlength() / 2;
-                    if (dealMap[this.friendship][entity.friendship]) {
-                        force.setlength(Math.max(len, 50));
+                    if (dealMap[this.friendship][entity.friendship].valueOf(this, entity)) {
+                        force.setlength(Math.max(len, 25));
                     }
                     else {
                         force.setlength(len);
@@ -117,7 +116,7 @@ class Entity {
     collideWith(entity, dealMap, game) {
         let collision = this.collide(entity, dealMap);
         if (collision.getlength() != 0) {
-            if (dealMap[this.friendship][entity.friendship]) {
+            if (dealMap[this.friendship][entity.friendship].valueOf(this, entity)) {
                 this.health -= entity.bodyDamage;
                 if (this.role == "mob") {
                     this.addDamage(entity);

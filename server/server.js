@@ -39,9 +39,7 @@ function load_file(fn, res, fld, ctt) {
  * @param {http.ServerResponse<http.IncomingMessage> & {req: http.IncomingMessage}} res 
  */
 function load(req, res) {
-    fs.appendFile("./logs/server.log", `[${Date.now()}] ${req.url.substring(0, 40)}\n`, () => {
-        console.log(`[${Date.now()}] ${req.url.substring(0, 40)}`);
-    });
+    console.log(`[${Date.now()}] ${req.url.substring(0, 40)}`);
     const parsed = url.parse(req.url, true);
     const filePath = parsed.pathname.endsWith("/") ? parsed.pathname + "index.html" : parsed.pathname;
     if (filePath.startsWith("/api/")) {

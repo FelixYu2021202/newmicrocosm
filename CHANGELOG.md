@@ -39,3 +39,9 @@
 
 - Added level system.
 - Adjusted mob data.
+  
+## Prefab-v0.0.4 fake wall, system, rendering
+
+- Added fake wall. It looks a bit different from walls and it doesn't collide with anything.
+- Changed mob spawning system from asynchronous to synchronous.
+- Rearranged rendering steps in tag.

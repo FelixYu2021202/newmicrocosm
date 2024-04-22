@@ -26,12 +26,10 @@ function load_api(an, res, pu) {
         }
         switch (parsed.base) {
             case "excel":
-                Excel().then(dat => {
-                    res.writeHead(200, {
-                        "Content-Type": "text/plain"
-                    });
-                    res.end(JSON.stringify(dat));
+                res.writeHead(200, {
+                    "Content-Type": "text/plain"
                 });
+                res.end(JSON.stringify(Excel.dat));
                 break;
             case "login":
                 res.writeHead(200, {

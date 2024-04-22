@@ -1,6 +1,7 @@
 const CollisionBox = require("./collisionBox.js");
 const Effect = require("./effect.js");
 const Entity = require("./entity.js");
+const Excel = require("./excel.js");
 const Game = require("./game.js");
 
 class Mob extends Entity {
@@ -34,18 +35,18 @@ class Mob extends Entity {
      */
     name;
 
-    constructor(data, name, rarity, x, y) {
-        super(new CollisionBox("c", x, y, data.mob[name].radius * data.rarity[rarity].size), data.mob[name].friction, data.mob[name].type);
+    constructor(name, rarity, x, y) {
+        super(new CollisionBox("c", x, y, Excel.dat.mob[name].radius * Excel.dat.rarity[rarity].size), Excel.dat.mob[name].friction, Excel.dat.mob[name].type);
         this.name = name;
-        this.health = data.mob[name].health * data.rarity[rarity].health;
-        this.bodyDamage = data.mob[name].bodyDamage * data.rarity[rarity].damage;
-        this.exp = data.mob[name].exp * data.rarity[rarity].exp;
-        this.effect = JSON.parse(data.mob[name].effect);
-        this.friendship = data.mob[name].friendship;
-        this.mobtype = data.mob[name].mobtype;
+        this.health = Excel.dat.mob[name].health * Excel.dat.rarity[rarity].health;
+        this.bodyDamage = Excel.dat.mob[name].bodyDamage * Excel.dat.rarity[rarity].damage;
+        this.exp = Excel.dat.mob[name].exp * Excel.dat.rarity[rarity].exp;
+        this.effect = JSON.parse(Excel.dat.mob[name].effect);
+        this.friendship = Excel.dat.mob[name].friendship;
+        this.mobtype = Excel.dat.mob[name].mobtype;
         this.rarity = rarity;
 
-        this.effect = new Effect(data.mob[name].effect, rarity);
+        this.effect = new Effect(Excel.dat.mob[name].effect, Excel.dat.rarity[rarity]);
     }
 
     /**
@@ -93,9 +94,7 @@ class Mob extends Entity {
             game.players.forEach(pl => {
                 if (pl.name == dealts[i].pl) {
                     pl.exp += this.exp;
-                    while (pl.exp >= Excel.dat.level[pl.level + 1].exp) {
-                        pl.exp -= Excel.dat.level[++pl.level].exp;
-                    }
+                    pl.checkupgrade();
                 }
             });
         }

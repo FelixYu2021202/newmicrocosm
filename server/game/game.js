@@ -44,9 +44,7 @@ class Game {
         if (this.players.find(p => p.name == name)) {
             return ws.close(1000);
         }
-        Excel().then(dat => {
-            this.players.push(new Player(dat, name, this.getSpawnX(), this.getSpawnY(), ws));
-        });
+        this.players.push(new Player(name, this.getSpawnX(), this.getSpawnY(), ws));
     }
 
     registered = false;

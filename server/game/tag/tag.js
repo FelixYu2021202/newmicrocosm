@@ -2,6 +2,7 @@ const Game = require("../game.js");
 const Wall = require("../wall.js");
 const Mob = require("../mob.js");
 const Excel = require("../excel.js");
+const Player = require("../player.js");
 
 let dealMap = {
     enemy: {
@@ -19,7 +20,15 @@ let dealMap = {
     player: {
         enemy: true,
         friend: false,
-        player: true,
+        player: {
+            /**
+             * @param {Player} a
+             * @param {Player} b
+             */
+            valueOf(a, b) {
+                return !!(((a.level == 101) + (b.level == 101)) % 2);
+            }
+        },
         none: false,
     },
     none: {
@@ -30,9 +39,12 @@ let dealMap = {
     }
 };
 
-function gen(size, rate) {
+function gen(size, rate, fakerate) {
     if (!rate) {
         rate = 0.23;
+    }
+    if (!fakerate) {
+        fakerate = 0.01;
     }
     let map = [
         "#".repeat(size)
@@ -42,6 +54,9 @@ function gen(size, rate) {
         for (let j = 2; j < size; j++) {
             if (Math.random() <= rate && (i != 2 || j != 2)) {
                 row = row.concat("#");
+            }
+            else if (Math.random() <= fakerate && (i != 2 || j != 2)) {
+                row = row.concat("?");
             }
             else {
                 row = row.concat(".");
@@ -65,20 +80,18 @@ class GameTag extends Game {
 
         this.size = 60;
 
-        this.walls = Wall.buildFromMap(gen(this.size));
+        let map = Wall.buildFromMap(gen(this.size));
+        this.walls = map.wall;
+        this.fakes = map.fake;
         let self = this;
         function spawnChest() {
-            Excel().then(dat => {
-                self.mobs.push(new Mob(dat, "chest", 8, 500 + Math.random() * (self.size - 2) * 500, 500 + Math.random() * (self.size - 2) * 500));
-            });
+            self.mobs.push(new Mob("chest", 6, 500 + Math.random() * (self.size - 2) * 500, 500 + Math.random() * (self.size - 2) * 500));
 
             setTimeout(spawnChest, 4000);
         }
         spawnChest();
         function spawnBob() {
-            Excel().then(dat => {
-                self.mobs.push(new Mob(dat, "bob", 1, 500 + Math.random() * (self.size - 2) * 500, 500 + Math.random() * (self.size - 2) * 500))
-            });
+            self.mobs.push(new Mob("bob", 1, 500 + Math.random() * (self.size - 2) * 500, 500 + Math.random() * (self.size - 2) * 500))
 
             setTimeout(spawnBob, 2500);
         }

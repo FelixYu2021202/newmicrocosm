@@ -11,6 +11,7 @@ const drawerdata = {
             [false]: "#ffbdef"
         }
     },
+    fakewallcolor: "#999",
     font: `"Seravek", "Open Sans", "Seravek", "Segoe UI", "Verdana", "PingFang SC", "Hiragino Sans GB", "Lantinghei SC", "Microsoft Yahei", "WenQuanYi Micro Hei", "sans"`,
     playercolor: "#ee0",
     wallcolor: "grey",

@@ -337,6 +337,21 @@ function start() {
                                 let player = curdata.players.find(p => p.name == user);
                                 let camera = Camera.call(player);
                                 drawer.backgroundline(camera);
+                                curdata.players.forEach(pl => {
+                                    playerdrawer(pl, camera, curdata.tid);
+                                });
+                                curdata.mobs.forEach(mob => {
+                                    mobdrawer(mob, camera);
+                                });
+                                curdata.fakes.forEach(wall => {
+                                    drawer.rect(
+                                        (wall.collisionBox.x - camera.x - wall.collisionBox.w / 2) * camera.rate + cv.width / 2,
+                                        (wall.collisionBox.y - camera.y - wall.collisionBox.h / 2) * camera.rate + cv.height / 2,
+                                        (wall.collisionBox.w) * camera.rate,
+                                        (wall.collisionBox.h) * camera.rate,
+                                        drawerdata.fakewallcolor
+                                    );
+                                });
                                 curdata.walls.forEach(wall => {
                                     drawer.rect(
                                         (wall.collisionBox.x - camera.x - wall.collisionBox.w / 2) * camera.rate + cv.width / 2,
@@ -345,12 +360,6 @@ function start() {
                                         (wall.collisionBox.h) * camera.rate,
                                         drawerdata.wallcolor
                                     );
-                                });
-                                curdata.players.forEach(pl => {
-                                    playerdrawer(pl, camera, curdata.tid);
-                                });
-                                curdata.mobs.forEach(mob => {
-                                    mobdrawer(mob, camera);
                                 });
                                 drawer.roundRect(cv.width - 600, cv.height - 75, 600, 50, "black");
                                 drawer.roundRect(cv.width - 590, cv.height - 70, 580 * player.exp / Excel.dat.level[player.level + 1].exp, 40, "yellow");

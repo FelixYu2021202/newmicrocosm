@@ -15,7 +15,7 @@ const mobdrawers = {
             (mob.collisionBox.x - camera.x) * camera.rate + drawer.cv.width / 2,
             (mob.collisionBox.y - camera.y) * camera.rate + drawer.cv.height / 2,
             (mob.collisionBox.r) * camera.rate,
-            drawerdata.playercolor
+            "grey"
         );
     },
     /**
@@ -27,6 +27,13 @@ const mobdrawers = {
             (mob.collisionBox.y - camera.y) * camera.rate + drawer.cv.height / 2,
             (mob.collisionBox.r) * camera.rate,
             drawerdata.playercolor
+        );
+        drawer.line(
+            (mob.collisionBox.x - camera.x - mob.collisionBox.r) * camera.rate + drawer.cv.width / 2,
+            (mob.collisionBox.y - camera.y) * camera.rate + drawer.cv.height / 2,
+            (mob.collisionBox.x - camera.x + mob.collisionBox.r) * camera.rate + drawer.cv.width / 2,
+            (mob.collisionBox.y - camera.y) * camera.rate + drawer.cv.height / 2,
+            "yellow 10px"
         );
     },
 };
@@ -40,19 +47,19 @@ const mobdrawer = function (mob, camera) {
         (mob.collisionBox.x - camera.x) * camera.rate + drawer.cv.width / 2,
         (mob.collisionBox.y - camera.y) * camera.rate + drawer.cv.height / 2 + 15 * camera.rate,
         Excel.dat.rarity[mob.rarity].color,
-        50 * camera.rate
+        40 * camera.rate
     );
     drawer.text(mob.name,
         (mob.collisionBox.x - camera.x) * camera.rate + drawer.cv.width / 2,
         (mob.collisionBox.y - camera.y - mob.collisionBox.r) * camera.rate + drawer.cv.height / 2 - 10 * camera.rate,
         "black",
-        50 * camera.rate
+        40 * camera.rate
     );
     drawer.text(Excel.dat.rarity[mob.rarity].name,
         (mob.collisionBox.x - camera.x) * camera.rate + drawer.cv.width / 2,
         (mob.collisionBox.y - camera.y + mob.collisionBox.r) * camera.rate + drawer.cv.height / 2 + 10 * camera.rate,
         Excel.dat.rarity[mob.rarity].color,
-        50 * camera.rate
+        40 * camera.rate
     )
 }
 

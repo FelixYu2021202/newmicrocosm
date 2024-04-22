@@ -11,15 +11,13 @@ class Effect {
 
     constructor(json, rarity) {
         let data = JSON.parse(json);
-        Excel().then((dat) => {
-            if (data.sight) {
-                this.sight = data.sight * dat.rarity[rarity].effect;
-                this.rate = 1 / this.sight;
-            }
-            if (data.speed) {
-                this.speed = data.speed;
-            }
-        });
+        if (data.sight) {
+            this.sight = data.sight * rarity.effect;
+            this.rate = 1 / this.sight;
+        }
+        if (data.speed) {
+            this.speed = data.speed;
+        }
     }
 }
 
