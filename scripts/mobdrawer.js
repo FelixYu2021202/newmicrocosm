@@ -22,18 +22,65 @@ const mobdrawers = {
      * @param {Mob} mob
      */
     chest(mob, camera) {
-        drawer.circle(
-            (mob.collisionBox.x - camera.x) * camera.rate + drawer.cv.width / 2,
-            (mob.collisionBox.y - camera.y) * camera.rate + drawer.cv.height / 2,
-            (mob.collisionBox.r) * camera.rate,
-            drawerdata.playercolor
+        let { x, y, r } = mob.collisionBox;
+        r *= 0.9;
+        let s2 = Math.sqrt(2);
+        drawer.ctx.lineWidth = r * 0.1 * camera.rate;
+        drawer.line(
+            (x - camera.x - r) * camera.rate + drawer.cv.width / 2,
+            (y - camera.y - r) * camera.rate + drawer.cv.height / 2,
+            (x - camera.x + r) * camera.rate + drawer.cv.width / 2,
+            (y - camera.y - r) * camera.rate + drawer.cv.height / 2,
+            "yellow"
         );
         drawer.line(
-            (mob.collisionBox.x - camera.x - mob.collisionBox.r) * camera.rate + drawer.cv.width / 2,
-            (mob.collisionBox.y - camera.y) * camera.rate + drawer.cv.height / 2,
-            (mob.collisionBox.x - camera.x + mob.collisionBox.r) * camera.rate + drawer.cv.width / 2,
-            (mob.collisionBox.y - camera.y) * camera.rate + drawer.cv.height / 2,
-            "yellow 10px"
+            (x - camera.x - r) * camera.rate + drawer.cv.width / 2,
+            (y - camera.y + r) * camera.rate + drawer.cv.height / 2,
+            (x - camera.x + r) * camera.rate + drawer.cv.width / 2,
+            (y - camera.y + r) * camera.rate + drawer.cv.height / 2,
+            "yellow"
+        );
+        drawer.line(
+            (x - camera.x - r) * camera.rate + drawer.cv.width / 2,
+            (y - camera.y - r) * camera.rate + drawer.cv.height / 2,
+            (x - camera.x - r) * camera.rate + drawer.cv.width / 2,
+            (y - camera.y + r) * camera.rate + drawer.cv.height / 2,
+            "yellow"
+        );
+        drawer.line(
+            (x - camera.x + r) * camera.rate + drawer.cv.width / 2,
+            (y - camera.y - r) * camera.rate + drawer.cv.height / 2,
+            (x - camera.x + r) * camera.rate + drawer.cv.width / 2,
+            (y - camera.y + r) * camera.rate + drawer.cv.height / 2,
+            "yellow"
+        );
+        drawer.line(
+            (x - camera.x - s2 * r) * camera.rate + drawer.cv.width / 2,
+            (y - camera.y) * camera.rate + drawer.cv.height / 2,
+            (x - camera.x) * camera.rate + drawer.cv.width / 2,
+            (y - camera.y - s2 * r) * camera.rate + drawer.cv.height / 2,
+            "yellow"
+        );
+        drawer.line(
+            (x - camera.x + s2 * r) * camera.rate + drawer.cv.width / 2,
+            (y - camera.y) * camera.rate + drawer.cv.height / 2,
+            (x - camera.x) * camera.rate + drawer.cv.width / 2,
+            (y - camera.y - s2 * r) * camera.rate + drawer.cv.height / 2,
+            "yellow"
+        );
+        drawer.line(
+            (x - camera.x - s2 * r) * camera.rate + drawer.cv.width / 2,
+            (y - camera.y) * camera.rate + drawer.cv.height / 2,
+            (x - camera.x) * camera.rate + drawer.cv.width / 2,
+            (y - camera.y + s2 * r) * camera.rate + drawer.cv.height / 2,
+            "yellow"
+        );
+        drawer.line(
+            (x - camera.x + s2 * r) * camera.rate + drawer.cv.width / 2,
+            (y - camera.y) * camera.rate + drawer.cv.height / 2,
+            (x - camera.x) * camera.rate + drawer.cv.width / 2,
+            (y - camera.y + s2 * r) * camera.rate + drawer.cv.height / 2,
+            "yellow"
         );
     },
 };
@@ -91,7 +138,7 @@ const playerdrawer = function (pl, camera, game) {
     );
     if (game == "tag") {
         drawer.text(
-            pl.level == 101 ? "Catcher" : "Escapee",
+            pl.level == 10001 ? "Catcher" : "Escapee",
             (pl.collisionBox.x - camera.x) * camera.rate + drawer.cv.width / 2,
             (pl.collisionBox.y - camera.y + pl.collisionBox.r + 30) * camera.rate + drawer.cv.height / 2,
             "black",

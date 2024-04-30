@@ -39,7 +39,7 @@ class Entity {
     bodyDamage;
 
     /**
-     * @type {"enemy" | "friendship" | "player"}
+     * @type {"enemy" | "friend" | "player" | "none" | "petal"}
      */
     friendship;
 
@@ -86,7 +86,7 @@ class Entity {
                     let force = new CollisionBox.Force(collision);
                     let len = force.getlength() / 2;
                     if (dealMap[this.friendship][entity.friendship].valueOf(this, entity)) {
-                        force.setlength(Math.max(len, 25));
+                        force.setlength(Math.max(len, 40));
                     }
                     else {
                         force.setlength(len);
@@ -113,8 +113,8 @@ class Entity {
      * @param {Entity} entity
      * @param {Game} game
      */
-    collideWith(entity, dealMap, game) {
-        let collision = this.collide(entity, dealMap);
+    collideWith(entity, dealMap, hitMap, game) {
+        let collision = this.collide(entity, hitMap);
         if (collision.getlength() != 0) {
             if (dealMap[this.friendship][entity.friendship].valueOf(this, entity)) {
                 this.health -= entity.bodyDamage;

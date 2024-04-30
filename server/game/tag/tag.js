@@ -4,18 +4,29 @@ const Mob = require("../mob.js");
 const Excel = require("../excel.js");
 const Player = require("../player.js");
 
+/**
+ * @type {{
+ *     [k in ("enemy" | "friend" | "player" | "none")]: {
+ *         [k in ("enemy" | "friend" | "player" | "none")]: {
+ *             valueOf(a: Entity, b: Entity): boolean;
+ *         }
+ *     }
+ * }}
+ */
 let dealMap = {
     enemy: {
         enemy: false,
         friend: true,
         player: true,
         none: false,
+        petal: true,
     },
     friend: {
         enemy: true,
         friend: false,
         player: false,
         none: false,
+        petal: false
     },
     player: {
         enemy: true,
@@ -30,12 +41,67 @@ let dealMap = {
             }
         },
         none: false,
+        petal: false
     },
     none: {
         enemy: false,
         friend: false,
         player: false,
-        none: false
+        none: false,
+        petal: false
+    },
+    petal: {
+        enemy: true,
+        friend: false,
+        player: false,
+        none: false,
+        petal: false
+    }
+};
+
+let hitMap = {
+    enemy: {
+        enemy: false,
+        friend: true,
+        player: true,
+        none: false,
+        petal: false,
+    },
+    friend: {
+        enemy: true,
+        friend: false,
+        player: false,
+        none: false,
+        petal: false
+    },
+    player: {
+        enemy: true,
+        friend: false,
+        player: {
+            /**
+             * @param {Player} a
+             * @param {Player} b
+             */
+            valueOf(a, b) {
+                return !!(((a.level == 101) + (b.level == 101)) % 2);
+            }
+        },
+        none: false,
+        petal: false
+    },
+    none: {
+        enemy: false,
+        friend: false,
+        player: false,
+        none: false,
+        petal: false
+    },
+    petal: {
+        enemy: false,
+        friend: false,
+        player: false,
+        none: false,
+        petal: false
     }
 };
 
@@ -78,22 +144,34 @@ class GameTag extends Game {
         this.open = true;
         this.tid = "tag";
 
-        this.size = 60;
+        this.size = 20;
 
         let map = Wall.buildFromMap(gen(this.size));
         this.walls = map.wall;
         this.fakes = map.fake;
         let self = this;
         function spawnChest() {
-            self.mobs.push(new Mob("chest", 6, 500 + Math.random() * (self.size - 2) * 500, 500 + Math.random() * (self.size - 2) * 500));
+            let rar = 0;
+            for (let i = 1; i < 15; i++) {
+                if (Math.random() <= Excel.dat.tag[i].chest) {
+                    rar = i;
+                }
+            }
+            self.mobs.push(new Mob("chest", rar, 500 + Math.random() * (self.size - 2) * 500, 500 + Math.random() * (self.size - 2) * 500));
 
-            setTimeout(spawnChest, 4000);
+            setTimeout(spawnChest, 2000);
         }
         spawnChest();
         function spawnBob() {
-            self.mobs.push(new Mob("bob", 1, 500 + Math.random() * (self.size - 2) * 500, 500 + Math.random() * (self.size - 2) * 500))
+            let rar = 0;
+            for (let i = 1; i < 15; i++) {
+                if (Math.random() <= Excel.dat.tag[i].bob) {
+                    rar = i;
+                }
+            }
+            self.mobs.push(new Mob("bob", rar, 500 + Math.random() * (self.size - 2) * 500, 500 + Math.random() * (self.size - 2) * 500))
 
-            setTimeout(spawnBob, 2500);
+            setTimeout(spawnBob, 3000);
         }
         spawnBob();
     }
@@ -115,30 +193,30 @@ class GameTag extends Game {
         });
         this.walls.forEach(wall => {
             this.mobs.forEach(mob => {
-                wall.collideWith(mob, dealMap, this);
-                mob.collideWith(wall, dealMap, this);
+                wall.collideWith(mob, dealMap, hitMap, this);
+                mob.collideWith(wall, dealMap, hitMap, this);
             });
             this.players.forEach(player => {
-                wall.collideWith(player, dealMap, this);
-                player.collideWith(wall, dealMap, this);
+                wall.collideWith(player, dealMap, hitMap, this);
+                player.collideWith(wall, dealMap, hitMap, this);
             });
         });
         this.mobs.forEach(mob => {
             this.players.forEach(player => {
-                mob.collideWith(player, dealMap, this);
-                player.collideWith(mob, dealMap, this);
+                mob.collideWith(player, dealMap, hitMap, this);
+                player.collideWith(mob, dealMap, hitMap, this);
             });
         });
         for (let i = 0; i < this.mobs.length; i++) {
             for (let j = i + 1; j < this.mobs.length; j++) {
-                this.mobs[i].collideWith(this.mobs[j], dealMap, this);
-                this.mobs[j].collideWith(this.mobs[i], dealMap, this);
+                this.mobs[i].collideWith(this.mobs[j], dealMap, hitMap, this);
+                this.mobs[j].collideWith(this.mobs[i], dealMap, hitMap, this);
             }
         }
         for (let i = 0; i < this.players.length; i++) {
             for (let j = i + 1; j < this.players.length; j++) {
-                this.players[i].collideWith(this.players[j], dealMap, this);
-                this.players[j].collideWith(this.players[i], dealMap, this);
+                this.players[i].collideWith(this.players[j], dealMap, hitMap, this);
+                this.players[j].collideWith(this.players[i], dealMap, hitMap, this);
             }
         }
         this.walls.forEach(wall => {
@@ -157,4 +235,5 @@ class GameTag extends Game {
 
 module.exports = GameTag;
 module.exports.dealMap = dealMap;
+module.exports.hitMap = hitMap;
 module.exports.gen = gen;

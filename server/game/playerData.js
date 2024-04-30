@@ -7,6 +7,9 @@ function create() {
     return {
         level: 0,
         exp: 0,
+        inventory: {
+            protein: [0, 5, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+        }
     };
 }
 

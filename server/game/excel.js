@@ -43,13 +43,10 @@ async function load(fn) {
     return res;
 }
 
-async function Excel() {
-    if (!Excel.dat) {
-        Excel.dat = await load("./data/test.xlsx");
-    }
-    return Excel.dat;
-}
+const Excel = {};
 
-Excel();
+load("./data/test.xlsx").then(dat => {
+    Excel.dat = dat;
+});
 
 module.exports = Excel;

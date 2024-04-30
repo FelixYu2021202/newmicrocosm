@@ -45,3 +45,8 @@
 - Added fake wall. It looks a bit different from walls and it doesn't collide with anything.
 - Changed mob spawning system from asynchronous to synchronous.
 - Rearranged rendering steps in tag.
+
+## Prefab-v0.0.5 control, server
+
+- Fixed control. Now a player stops if his cursor is too near from himself.
+- Multiple servers allowed.

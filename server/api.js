@@ -7,9 +7,9 @@ const Excel = require("./game/excel");
 const PlayerData = require("./game/playerData");
 
 /**
- * @param {string} an 
- * @param {http.ServerResponse<http.IncomingMessage> & {req: http.IncomingMessage}} res 
- * @param {url.UrlWithParsedQuery & url.UrlWithStringQuery & url.Url} pu 
+ * @param {string} an
+ * @param {http.ServerResponse<http.IncomingMessage> & {req: http.IncomingMessage}} res
+ * @param {url.UrlWithParsedQuery & url.UrlWithStringQuery & url.Url} pu
  */
 function load_api(an, res, pu) {
     const parsed = path.parse(an);

@@ -8,7 +8,7 @@ class Mob extends Entity {
     role = "mob";
 
     /**
-     * @type {"enemy" | "friend" | "player"}
+     * @type {"enemy" | "friend" | "player" | "none" | "petal"}
      */
     friendship;
 
@@ -20,10 +20,19 @@ class Mob extends Entity {
     //---
 
     /**
-     * real exp is counted as `exp * expMultiplier(rairty)`
+     * @type {number}
+     */
+    maxHealth;
+
+    /**
      * @type {number}
      */
     exp;
+
+    /**
+     * @type {number}
+     */
+    sight;
 
     /**
      * @type {number}
@@ -38,12 +47,12 @@ class Mob extends Entity {
     constructor(name, rarity, x, y) {
         super(new CollisionBox("c", x, y, Excel.dat.mob[name].radius * Excel.dat.rarity[rarity].size), Excel.dat.mob[name].friction, Excel.dat.mob[name].type);
         this.name = name;
-        this.health = Excel.dat.mob[name].health * Excel.dat.rarity[rarity].health;
-        this.bodyDamage = Excel.dat.mob[name].bodyDamage * Excel.dat.rarity[rarity].damage;
+        this.maxHealth = this.health = Excel.dat.mob[name].health * Excel.dat.rarity[rarity].mob;
+        this.bodyDamage = Excel.dat.mob[name].bodyDamage * Excel.dat.rarity[rarity].mob;
         this.exp = Excel.dat.mob[name].exp * Excel.dat.rarity[rarity].exp;
-        this.effect = JSON.parse(Excel.dat.mob[name].effect);
         this.friendship = Excel.dat.mob[name].friendship;
         this.mobtype = Excel.dat.mob[name].mobtype;
+        this.sight = this.collisionBox.r * Excel.dat.rarity[rarity].sight;
         this.rarity = rarity;
 
         this.effect = new Effect(Excel.dat.mob[name].effect, Excel.dat.rarity[rarity]);
@@ -59,8 +68,10 @@ class Mob extends Entity {
             game.players.forEach(pl => {
                 dis = dis.min(pl.collisionBox.minus(self.collisionBox));
             });
-            dis.setlength(22);
-            this.speed.pluse(dis);
+            if (dis.getlength() <= this.sight) {
+                dis.setlength(22);
+                this.speed.pluse(dis);
+            }
         }
     }
 
@@ -76,6 +87,12 @@ class Mob extends Entity {
             }
             this.playerdealts[entity.name] += entity.bodyDamage;
         }
+        if (entity.role == "petal") {
+            if (this.playerdealts[entity.owner] == undefined) {
+                this.playerdealts[entity.owner] = 0;
+            }
+            this.playerdealts[entity.owner] += entity.bodyDamage;
+        }
     }
 
     /**
@@ -89,8 +106,11 @@ class Mob extends Entity {
                 pl
             });
         }
-        dealts = dealts.sort((a, b) => a.dmg - b.dmg);
+        dealts = dealts.sort((a, b) => b.dmg - a.dmg);
         for (let i = 0; i < Math.min(4, dealts.length); i++) {
+            if (dealts[i].dmg < this.maxHealth * Excel.dat.rarity[this.rarity].dropRate) {
+                break;
+            }
             game.players.forEach(pl => {
                 if (pl.name == dealts[i].pl) {
                     pl.exp += this.exp;

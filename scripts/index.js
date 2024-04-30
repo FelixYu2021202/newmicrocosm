@@ -104,6 +104,8 @@ function start() {
                 });
             }
 
+            let cserver = "test";
+
             const pages = {
                 chperm() {
                     if (user == null) {
@@ -163,7 +165,7 @@ function start() {
                     buttons = ["tag", "login", "chperm"];
                     bcb = {
                         tag() {
-                            return gotoPage("tag");
+                            return gotoPage("tagStart");
                         },
                         login() {
                             return gotoPage("login");
@@ -251,7 +253,7 @@ function start() {
                         data = { home: false };
                         buttons = ["home"];
 
-                        let ws = new WebSocket(`ws://${domain}:${ports.socketPort}?type=GameTag&room=test&player=${user}`);
+                        let ws = new WebSocket(`ws://${domain}:${ports.socketPort}?type=GameTag&room=${cserver}&player=${user}`);
 
                         bcb = {
                             home() {
@@ -274,61 +276,28 @@ function start() {
                             }
                         }
 
-                        let control = {
-                            w: false,
-                            d: false,
-                            s: false,
-                            a: false
-                        };
-
                         /**
-                         * @param {KeyboardEvent} ev
+                         * @param {MouseEvent} ev
                          */
-                        function keyHandlerDown(ev) {
-                            ev.key = ev.key.toLowerCase();
-                            if (ev.key == "d") {
-                                control.d = true;
-                            }
-                            if (ev.key == "s") {
-                                control.s = true;
-                            }
-                            if (ev.key == "a") {
-                                control.a = true;
-                            }
-                            if (ev.key == "w") {
-                                control.w = true;
-                            }
-                        }
-
-                        /**
-                         * @param {KeyboardEvent} ev
-                         */
-                        function keyHandlerUp(ev) {
-                            ev.key = ev.key.toLowerCase();
-                            if (ev.key == "a") {
-                                control.a = false;
-                            }
-                            if (ev.key == "w") {
-                                control.w = false;
-                            }
-                            if (ev.key == "d") {
-                                control.d = false;
-                            }
-                            if (ev.key == "s") {
-                                control.s = false;
+                        function mouseHandler(ev) {
+                            let x = ev.clientX - rect.left - innerWidth / 2;
+                            let y = ev.clientY - rect.top - innerHeight / 2;
+                            if (ws.readyState == ws.OPEN) {
+                                ws.send(JSON.stringify({
+                                    x: x / innerWidth * drawerdata.windowwidth,
+                                    y: y / innerWidth * drawerdata.windowwidth
+                                }));
                             }
                         }
 
                         ws.onopen = function (ev) {
-                            addEventListener("keydown", keyHandlerDown);
-                            addEventListener("keyup", keyHandlerUp);
+                            addEventListener("mousemove", mouseHandler);
                         }
 
                         ws.onclose = function (ev) {
-                            removeEventListener("keydown", keyHandlerDown);
-                            removeEventListener("keyup", keyHandlerUp);
+                            removeEventListener("mousemove", mouseHandler);
                             setTimeout(() => {
-                                gotoPage("home");
+                                gotoPage("tagStart");
                             }, 200);
                         }
 
@@ -375,13 +344,6 @@ function start() {
 
                             frames.home = drawer.button("X", 100, 100, "red", drawerdata.buttons.magenta[data.home], 40);
 
-                            if (ws.readyState == ws.OPEN) {
-                                ws.send(JSON.stringify({
-                                    x: control.d - control.a,
-                                    y: control.s - control.w
-                                }));
-                            }
-
                             currentFrame = requestAnimationFrame(tag);
                         }
                     }
@@ -391,6 +353,40 @@ function start() {
                         }
                     }
                 },
+                tagStart() {
+                    console.log("tagStart");
+                    data = { tag: false, home: false, chserver: false };
+                    buttons = ["tag", "home", "chserver"];
+                    bcb = {
+                        tag() {
+                            return gotoPage("tag");
+                        },
+                        login() {
+                            return gotoPage("login");
+                        },
+                        chserver() {
+                            cserver = prompt("Please enter server name:");
+                        }
+                    }
+                    return function tagStart() {
+                        frames = {};
+                        drawer.clear();
+
+                        drawer.backgroundline();
+
+                        drawer.text("New Microcosm", cv.width / 2, 200, "blue", 100);
+                        drawer.text("Tag", cv.width / 2, 350, "black", 80);
+                        drawer.text(`Server: ${cserver}`, cv.width / 2, 500, "black", 50);
+                        drawer.text(`User: ${user}`, cv.width - drawer.measure(`User: ${user}`, 50) / 2, cv.height - 20, "black", 50);
+
+                        frames.tag = drawer.button("start", cv.width / 2, 650, "black", drawerdata.buttons.magenta[data.tag], 40);
+
+                        frames.home = drawer.button("X", 100, 100, "red", drawerdata.buttons.magenta[data.home], 40);
+                        frames.chserver = drawer.button("Change server", cv.width / 2, 800, "black", drawerdata.buttons.magenta[data.chserver], 40);
+
+                        currentFrame = requestAnimationFrame(tagStart);
+                    }
+                }
             }
 
             let movepaused = false;
@@ -402,10 +398,7 @@ function start() {
                 movepaused = false;
             }
 
-            let page = localStorage.getItem("page");
-            // if (!page) {
-            page = "home";
-            // }
+            let page = "home";
 
             gotoPage(page);
 

@@ -3,9 +3,12 @@ const PlayerData = require("./playerData.js");
 const Entity = require("./entity.js");
 const Effect = require("./effect.js");
 const Excel = require("./excel.js");
+const Petal = require("./petal.js");
 const Game = require("./game.js");
 
 const WebSocket = require("ws");
+
+class PetalManager { }
 
 class Player extends Entity {
     role = "player";
@@ -50,6 +53,11 @@ class Player extends Entity {
     towards = new CollisionBox.Force(0, 0);
 
     /**
+     * @type {PetalManager}
+     */
+    petals = [];
+
+    /**
      * @type {WebSocket}
      */
     #ws;
@@ -85,7 +93,7 @@ class Player extends Entity {
         let self = this;
         this.ws.on("message", function (data) {
             self.#control.assign(JSON.parse(data));
-            self.#control.setlength(self.effect.speed);
+            self.#control.setlength(Math.max(Math.min(self.effect.speed, self.#control.getlength() * 0.8 - 20), 0));
         });
     }
 

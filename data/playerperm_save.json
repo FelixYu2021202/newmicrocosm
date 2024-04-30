@@ -3,8 +3,27 @@
         "admin": {
             "perm": "JCRhZG1pbg==",
             "template": {
-                "level": 101,
-                "exp": 0
+                "level": 10001,
+                "exp": 0,
+                "inventory": {
+                    "protein": [
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        5
+                    ]
+                }
             }
         }
     },
