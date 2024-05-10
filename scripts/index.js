@@ -314,19 +314,13 @@ function start() {
                                 });
                                 curdata.fakes.forEach(wall => {
                                     drawer.rect(
-                                        (wall.collisionBox.x - camera.x - wall.collisionBox.w / 2) * camera.rate + cv.width / 2,
-                                        (wall.collisionBox.y - camera.y - wall.collisionBox.h / 2) * camera.rate + cv.height / 2,
-                                        (wall.collisionBox.w) * camera.rate,
-                                        (wall.collisionBox.h) * camera.rate,
+                                        ...drawer.transform(wall.collisionBox, camera),
                                         drawerdata.fakewallcolor
                                     );
                                 });
                                 curdata.walls.forEach(wall => {
                                     drawer.rect(
-                                        (wall.collisionBox.x - camera.x - wall.collisionBox.w / 2) * camera.rate + cv.width / 2,
-                                        (wall.collisionBox.y - camera.y - wall.collisionBox.h / 2) * camera.rate + cv.height / 2,
-                                        (wall.collisionBox.w) * camera.rate,
-                                        (wall.collisionBox.h) * camera.rate,
+                                        ...drawer.transform(wall.collisionBox, camera),
                                         drawerdata.wallcolor
                                     );
                                 });

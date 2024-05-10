@@ -34,7 +34,7 @@ class Petal extends Entity {
      */
     owner;
 
-    constructor(name, rarity, owner) { // its position should be assigned by player directly
+    constructor(name, rarity, owner) { // its position should be assigned by the player directly
         super(new CollisionBox("c", 0, 0, Excel.dat.petal[name].radius), 1, "movable");
         this.name = name;
         this.maxHealth = this.health = Excel.dat.petal[name].health * Excel.dat.rarity[rarity].petal;

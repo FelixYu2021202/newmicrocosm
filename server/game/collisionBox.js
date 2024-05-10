@@ -10,6 +10,11 @@ class Force {
      */
     y;
 
+    *[Symbol.iterator]() {
+        yield this.x;
+        yield this.y;
+    }
+
     /**
      * @param {number | Force} x
      * @param {number} y
@@ -99,6 +104,21 @@ class Force {
     equals(force) {
         return force.x == this.x && force.y == this.y;
     }
+
+    /**
+     * @param {number} angle rad
+     * @param {Force} force
+     */
+    rotate(angle, force) {
+        if (force == undefined) {
+            force = new Force(0, 0);
+        }
+        let { x, y } = this.minus(force);
+        return new Force(
+            x * Math.cos(angle) + y * Math.sin(angle),
+            y * Math.cos(angle) - x * Math.sin(angle)
+        ).plus(force);
+    }
 }
 
 class CollisionBox extends Force {
@@ -124,6 +144,18 @@ class CollisionBox extends Force {
      * @type {number}
      */
     r;
+
+    *[Symbol.iterator]() {
+        yield this.x;
+        yield this.y;
+        if (this.type == "r") {
+            yield this.w;
+            yield this.h;
+        }
+        else {
+            yield this.r;
+        }
+    }
 
     /**
      * @param {"r" | "c"} type

@@ -1,17 +1,11 @@
 if (false) {
     const CollisionBox = require("../server/game/collisionBox");
+    const { Force } = require("../server/game/collisionBox");
 }
 
-class Vec2 {
-    /**
-     * @param {number} x
-     * @param {number} y
-     */
-    constructor(x, y) {
-        this.x = x;
-        this.y = y;
-    }
-}
+/**
+ * @typedef {{ x: number; y: number; rate: number; }} Camera
+ */
 
 class Vec4 {
     /**
@@ -205,6 +199,34 @@ const drawer = {
         }
 
         this.ctx.fillText(text, x - siz.width / 2, y);
+    },
+
+    /**
+     * @param {CollisionBox} cb
+     * @param {Camera} camera
+     */
+    transform(cb, camera) {
+        if (cb.type == "r") {
+            return new CollisionBox("r",
+                (cb.x - cb.w / 2 - camera.x) * camera.rate + this.cv.width / 2,
+                (cb.y - cb.h / 2 - camera.y) * camera.rate + this.cv.height / 2,
+                cb.w * camera.rate,
+                cb.h * camera.rate
+            );
+        }
+        else if (cb.type == "c") {
+            return new CollisionBox("c",
+                (cb.x - camera.x) * camera.rate + this.cv.width / 2,
+                (cb.y - camera.y) * camera.rate + this.cv.height / 2,
+                cb.r * camera.rate
+            );
+        }
+        else {
+            return new Force(
+                (cb.x - camera.x) * camera.rate + this.cv.width / 2,
+                (cb.y - camera.y) * camera.rate + this.cv.height / 2
+            );
+        }
     },
 
     /**

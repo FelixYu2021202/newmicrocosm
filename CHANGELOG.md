@@ -50,3 +50,7 @@
 
 - Fixed control. Now a player stops if his cursor is too near from himself.
 - Multiple servers allowed.
+
+## Prefab-v0.0.5-1 code
+
+- Added a few functions to make code shorter.
