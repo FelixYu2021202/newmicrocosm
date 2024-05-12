@@ -1,5 +1,5 @@
 const drawerdata = {
-    backgroundlinespace: 100,
+    backgroundlinespace: 200,
     backgroundlinewidth: 2.5,
     backgroundlinecolor: "#aaa",
     buttonpaddingx: 50,

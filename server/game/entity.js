@@ -69,20 +69,20 @@ class Entity {
     /**
      * @param {Entity} entity
      */
-    collide(entity, dealMap) {
+    collide(entity, dealMap, exertMap) {
         let collision = this.collisionBox.collide(entity.collisionBox);
         if (this.type == "movable") {
             if (entity.type == "ghost") {
                 return collision;
             }
             if (entity.type == "static") { // Only this entity moves.
-                if (collision.getlength() != 0) {
+                if (collision.getlength() != 0 && exertMap[this.friendship][entity.friendship].valueOf(this, entity)) {
                     let force = new CollisionBox.Force(collision);
                     this.speed.pluse(force);
                 }
             }
             else {
-                if (collision.getlength() != 0) {
+                if (collision.getlength() != 0 && exertMap[this.friendship][entity.friendship].valueOf(this, entity)) {
                     let force = new CollisionBox.Force(collision);
                     let len = force.getlength() / 2;
                     if (dealMap[this.friendship][entity.friendship].valueOf(this, entity)) {
@@ -100,7 +100,7 @@ class Entity {
             if (entity.type != "static") { // otherwise it does not move
                 return collision;
             }
-            if (collision.getlength() != 0) {
+            if (collision.getlength() != 0 && exertMap[this.friendship][entity.friendship].valueOf(this, entity)) {
                 let force = new CollisionBox.Force(collision);
                 this.speed.pluse(force);
             }
@@ -113,8 +113,8 @@ class Entity {
      * @param {Entity} entity
      * @param {Game} game
      */
-    collideWith(entity, dealMap, hitMap, game) {
-        let collision = this.collide(entity, hitMap);
+    collideWith(entity, dealMap, hitMap, exertMap, game) {
+        let collision = this.collide(entity, hitMap, exertMap);
         if (collision.getlength() != 0) {
             if (dealMap[this.friendship][entity.friendship].valueOf(this, entity)) {
                 this.health -= entity.bodyDamage;

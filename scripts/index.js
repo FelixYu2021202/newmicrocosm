@@ -1,6 +1,8 @@
 if (false) {
     const Entity = require("../server/game/entity");
     const Game = require("../server/game/game");
+    const { Force } = require("../server/game/collisionBox");
+    const CollisionBox = require("../server/game/collisionBox");
 }
 
 function Camera() {
@@ -306,22 +308,50 @@ function start() {
                                 let player = curdata.players.find(p => p.name == user);
                                 let camera = Camera.call(player);
                                 drawer.backgroundline(camera);
-                                curdata.players.forEach(pl => {
-                                    playerdrawer(pl, camera, curdata.tid);
+
+                                curdata.walls.forEach(wall => {
+                                    drawer.rect(
+                                        ...drawer.transform(wall.collisionBox, camera),
+                                        drawerdata.wallcolor
+                                    );
                                 });
                                 curdata.mobs.forEach(mob => {
                                     mobdrawer(mob, camera);
+                                    if (mob.rarity < 8) {
+                                        return;
+                                    }
+                                    ctx.fillStyle = Excel.dat.rarity[mob.rarity].color;
+                                    ctx.beginPath();
+                                    ctx.moveTo(...drawer
+                                        .transform(new Force(200, 0)
+                                            .plus(player.collisionBox)
+                                            .rotate(new Force(mob.collisionBox)
+                                                .angle(camera), camera), camera));
+                                    ctx.lineTo(...drawer
+                                        .transform(new Force(150, -50)
+                                            .plus(player.collisionBox)
+                                            .rotate(new Force(mob.collisionBox)
+                                                .angle(camera), camera), camera));
+                                    ctx.lineTo(...drawer
+                                        .transform(new Force(150, 50)
+                                            .plus(player.collisionBox)
+                                            .rotate(new Force(mob.collisionBox)
+                                                .angle(camera), camera), camera));
+                                    ctx.fill();
+                                });
+                                curdata.players.forEach(pl => {
+                                    playerdrawer(pl, camera, curdata.tid);
+                                    pl.petals.petals.forEach(ptl => {
+                                        if (!ptl.active) {
+                                            return;
+                                        }
+                                        petaldrawer(ptl, camera);
+                                    });
                                 });
                                 curdata.fakes.forEach(wall => {
                                     drawer.rect(
                                         ...drawer.transform(wall.collisionBox, camera),
                                         drawerdata.fakewallcolor
-                                    );
-                                });
-                                curdata.walls.forEach(wall => {
-                                    drawer.rect(
-                                        ...drawer.transform(wall.collisionBox, camera),
-                                        drawerdata.wallcolor
                                     );
                                 });
                                 drawer.roundRect(cv.width - 600, cv.height - 75, 600, 50, "black");
@@ -355,8 +385,8 @@ function start() {
                         tag() {
                             return gotoPage("tag");
                         },
-                        login() {
-                            return gotoPage("login");
+                        home() {
+                            return gotoPage("home");
                         },
                         chserver() {
                             cserver = prompt("Please enter server name:");

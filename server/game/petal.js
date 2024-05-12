@@ -10,7 +10,7 @@ class Petal extends Entity {
     /**
      * @type {"enemy" | "friend" | "player" | "none" | "petal"}
      */
-    friendship = "friend";
+    friendship = "petal";
 
     //---
 
@@ -33,6 +33,11 @@ class Petal extends Entity {
      * @type {string}
      */
     owner;
+
+    /**
+     * @type {boolean}
+     */
+    active;
 
     constructor(name, rarity, owner) { // its position should be assigned by the player directly
         super(new CollisionBox("c", 0, 0, Excel.dat.petal[name].radius), 1, "movable");

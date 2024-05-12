@@ -1,5 +1,7 @@
 // Supports web.
 
+Math.TAU = Math.PI * 2;
+
 class Force {
     /**
      * @type {number}
@@ -113,11 +115,35 @@ class Force {
         if (force == undefined) {
             force = new Force(0, 0);
         }
+        if (!force.negate) {
+            force = new Force(force);
+        }
         let { x, y } = this.minus(force);
         return new Force(
-            x * Math.cos(angle) + y * Math.sin(angle),
-            y * Math.cos(angle) - x * Math.sin(angle)
+            x * Math.cos(angle) - y * Math.sin(angle),
+            y * Math.cos(angle) + x * Math.sin(angle)
         ).plus(force);
+    }
+
+    /**
+     * @param {Force} force
+     */
+    angle(force) {
+        if (force == undefined) {
+            force = new Force(0, 0);
+        }
+        if (!force.negate) {
+            force = new Force(force);
+        }
+        let { x, y } = this.minus(force);
+        let h = Math.hypot(x, y);
+        let s = Math.asin(y / h), c = Math.acos(x / h);
+        if (s > 0) {
+            return c;
+        }
+        else {
+            return Math.TAU - c;
+        }
     }
 }
 

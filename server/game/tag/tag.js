@@ -105,6 +105,44 @@ let hitMap = {
     }
 };
 
+let exertMap = {
+    enemy: {
+        enemy: true,
+        friend: true,
+        player: true,
+        none: true,
+        petal: false,
+    },
+    friend: {
+        enemy: true,
+        friend: true,
+        player: false,
+        none: true,
+        petal: false
+    },
+    player: {
+        enemy: true,
+        friend: false,
+        player: true,
+        none: true,
+        petal: false
+    },
+    none: {
+        enemy: false,
+        friend: false,
+        player: false,
+        none: false,
+        petal: false
+    },
+    petal: {
+        enemy: false,
+        friend: false,
+        player: false,
+        none: false,
+        petal: false
+    }
+};
+
 function gen(size, rate, fakerate) {
     if (!rate) {
         rate = 0.23;
@@ -159,7 +197,7 @@ class GameTag extends Game {
             }
             self.mobs.push(new Mob("chest", rar, 500 + Math.random() * (self.size - 2) * 500, 500 + Math.random() * (self.size - 2) * 500));
 
-            setTimeout(spawnChest, 2000);
+            setTimeout(spawnChest, 8000);
         }
         spawnChest();
         function spawnBob() {
@@ -171,7 +209,7 @@ class GameTag extends Game {
             }
             self.mobs.push(new Mob("bob", rar, 500 + Math.random() * (self.size - 2) * 500, 500 + Math.random() * (self.size - 2) * 500))
 
-            setTimeout(spawnBob, 3000);
+            setTimeout(spawnBob, 7500);
         }
         spawnBob();
     }
@@ -193,30 +231,37 @@ class GameTag extends Game {
         });
         this.walls.forEach(wall => {
             this.mobs.forEach(mob => {
-                wall.collideWith(mob, dealMap, hitMap, this);
-                mob.collideWith(wall, dealMap, hitMap, this);
+                wall.collideWith(mob, dealMap, hitMap, exertMap, this);
+                mob.collideWith(wall, dealMap, hitMap, exertMap, this);
             });
             this.players.forEach(player => {
-                wall.collideWith(player, dealMap, hitMap, this);
-                player.collideWith(wall, dealMap, hitMap, this);
+                wall.collideWith(player, dealMap, hitMap, exertMap, this);
+                player.collideWith(wall, dealMap, hitMap, exertMap, this);
             });
         });
         this.mobs.forEach(mob => {
             this.players.forEach(player => {
-                mob.collideWith(player, dealMap, hitMap, this);
-                player.collideWith(mob, dealMap, hitMap, this);
+                mob.collideWith(player, dealMap, hitMap, exertMap, this);
+                player.collideWith(mob, dealMap, hitMap, exertMap, this);
+                player.petals.petals.forEach(petal => {
+                    if (!petal.active) {
+                        return;
+                    }
+                    mob.collideWith(petal, dealMap, hitMap, exertMap, this);
+                    petal.collideWith(mob, dealMap, hitMap, exertMap, this);
+                });
             });
         });
         for (let i = 0; i < this.mobs.length; i++) {
             for (let j = i + 1; j < this.mobs.length; j++) {
-                this.mobs[i].collideWith(this.mobs[j], dealMap, hitMap, this);
-                this.mobs[j].collideWith(this.mobs[i], dealMap, hitMap, this);
+                this.mobs[i].collideWith(this.mobs[j], dealMap, hitMap, exertMap, this);
+                this.mobs[j].collideWith(this.mobs[i], dealMap, hitMap, exertMap, this);
             }
         }
         for (let i = 0; i < this.players.length; i++) {
             for (let j = i + 1; j < this.players.length; j++) {
-                this.players[i].collideWith(this.players[j], dealMap, hitMap, this);
-                this.players[j].collideWith(this.players[i], dealMap, hitMap, this);
+                this.players[i].collideWith(this.players[j], dealMap, hitMap, exertMap, this);
+                this.players[j].collideWith(this.players[i], dealMap, hitMap, exertMap, this);
             }
         }
         this.walls.forEach(wall => {
@@ -226,6 +271,15 @@ class GameTag extends Game {
             mob.deal();
         });
         this.players.forEach(player => {
+            player.petals.petals.forEach(petal => {
+                if (petal.health <= 0) {
+                    petal.active = false;
+                    setTimeout(() => {
+                        petal.health = petal.maxHealth;
+                        petal.active = true;
+                    }, 1000);
+                }
+            });
             player.deal();
         });
         this.mobs = this.mobs.filter(mob => mob.health > 0);
@@ -236,4 +290,5 @@ class GameTag extends Game {
 module.exports = GameTag;
 module.exports.dealMap = dealMap;
 module.exports.hitMap = hitMap;
+module.exports.exertMap = exertMap;
 module.exports.gen = gen;

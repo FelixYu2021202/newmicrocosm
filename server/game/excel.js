@@ -37,7 +37,7 @@ async function load(fn) {
         loaded: true
     };
     let book = await wb.xlsx.readFile(fn);
-    for (let key of ["mob", "drop", "level", "rarity", "tag"]) {
+    for (let key of ["mob", "drop", "level", "rarity", "tag", "petal"]) {
         res[key] = parsesheet(book.getWorksheet(key));
     }
     return res;

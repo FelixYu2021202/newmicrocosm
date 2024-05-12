@@ -54,3 +54,7 @@
 ## Prefab-v0.0.5-1 code
 
 - Added a few functions to make code shorter.
+
+## Prefab-v0.0.6 petal
+
+- Added petal. Inventory hasn't been made.

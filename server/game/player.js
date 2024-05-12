@@ -8,7 +8,46 @@ const Game = require("./game.js");
 
 const WebSocket = require("ws");
 
-class PetalManager { }
+class PetalManager {
+    /**
+     * @type {Petal[]}
+     */
+    petals = [];
+
+    /**
+     * @type {string}
+     */
+    name;
+
+    /**
+     * @param {string} name
+     */
+    constructor(name) {
+        this.name = name;
+    }
+
+    setpetal() {
+        for (let i = 0; i < 10; i++) {
+            this.petals.push(new Petal("protein", 2, this.name));
+            setTimeout(() => {
+                this.petals[i].active = true;
+            }, 1000);
+        }
+    }
+
+    /**
+     * @param {CollisionBox.Force} force
+     */
+    move(force) {
+        // set range: 250
+        // round speed: 3 rad
+        let dif = new CollisionBox.Force(250, 0).rotate((Date.now() / 333));
+        for (let i = 0; i < 10; i++) {
+            this.petals[i].collisionBox.assign(force.plus(dif));
+            dif.assign(dif.rotate(Math.TAU / 10));
+        }
+    }
+}
 
 class Player extends Entity {
     role = "player";
@@ -36,7 +75,7 @@ class Player extends Entity {
     exp;
 
     /**
-     * @type {[]} // TODO
+     * @type {PetalManager} // TODO
      */
     petals;
 
@@ -51,11 +90,6 @@ class Player extends Entity {
     effect;
 
     towards = new CollisionBox.Force(0, 0);
-
-    /**
-     * @type {PetalManager}
-     */
-    petals = [];
 
     /**
      * @type {WebSocket}
@@ -76,6 +110,8 @@ class Player extends Entity {
         this.bodyDamage = Excel.dat.level[this.level].bodyDamage;
 
         this.effect = new Effect(Excel.dat.level[this.level].effect, Excel.dat.rarity[1]);
+        this.petals = new PetalManager(name);
+        this.petals.setpetal();
 
         this.#ws = ws;
         this.#ws.on("close", () => {
@@ -102,6 +138,7 @@ class Player extends Entity {
      */
     move(game) {
         this.collisionBox.pluse(this.#control);
+        this.petals.move(this.collisionBox);
     }
 
     checkupgrade() {
