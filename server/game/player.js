@@ -39,9 +39,9 @@ class PetalManager {
      * @param {CollisionBox.Force} force
      */
     move(force) {
-        // set range: 250
+        // set range: 175
         // round speed: 3 rad
-        let dif = new CollisionBox.Force(250, 0).rotate((Date.now() / 333));
+        let dif = new CollisionBox.Force(175, 0).rotate((Date.now() / 333));
         for (let i = 0; i < 10; i++) {
             this.petals[i].collisionBox.assign(force.plus(dif));
             dif.assign(dif.rotate(Math.TAU / 10));
@@ -100,7 +100,14 @@ class Player extends Entity {
         return this.#ws;
     }
 
-    constructor(name, x, y, ws) {
+    /**
+     * @param {string} name
+     * @param {number} x
+     * @param {number} y
+     * @param {Game} game
+     * @param {WebSocket} ws
+     */
+    constructor(name, x, y, game, ws) {
         super(new CollisionBox("c", x, y, 50), 0.9, "movable");
         this.name = name;
         let pd = PlayerData.get(name);
@@ -120,16 +127,31 @@ class Player extends Entity {
                 exp: this.exp
             });
         });
-        this.registerControl();
+        this.registerControl(game);
     }
 
     #control = new CollisionBox.Force(0, 0);
 
-    registerControl() {
+    /**
+     * @param {Game} game
+     */
+    registerControl(game) {
         let self = this;
         this.ws.on("message", function (data) {
-            self.#control.assign(JSON.parse(data));
-            self.#control.setlength(Math.max(Math.min(self.effect.speed, self.#control.getlength() * 0.8 - 20), 0));
+            let dat = JSON.parse(data);
+            if (dat.message == "move") {
+                self.#control.assign(JSON.parse(data));
+                self.#control.setlength(Math.max(Math.min(self.effect.speed, self.#control.getlength() * 0.8 - 20), 0));
+            }
+            else if (dat.message == "summonBob") {
+                game.summonBob(dat.rarity);
+            }
+            else if (dat.message == "summonChest") {
+                game.summonChest(dat.rarity);
+            }
+            else if (dat.message == "chat") {
+                console.log(`${self.name}: ${dat.text}`);
+            }
         });
     }
 

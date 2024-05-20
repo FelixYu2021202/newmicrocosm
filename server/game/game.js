@@ -44,7 +44,7 @@ class Game {
         if (this.players.find(p => p.name == name)) {
             return ws.close(1000);
         }
-        this.players.push(new Player(name, this.getSpawnX(), this.getSpawnY(), ws));
+        this.players.push(new Player(name, this.getSpawnX(), this.getSpawnY(), this, ws));
     }
 
     registered = false;
@@ -82,6 +82,12 @@ class Game {
     }
 
     getSpawnY() {
+    }
+
+    summonBob() {
+    }
+
+    summonChest() {
     }
 }
 

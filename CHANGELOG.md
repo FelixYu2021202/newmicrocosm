@@ -58,3 +58,7 @@
 ## Prefab-v0.0.6 petal
 
 - Added petal. Inventory hasn't been made.
+
+## Prefab-v0.0.6-1 test
+
+- Server test.

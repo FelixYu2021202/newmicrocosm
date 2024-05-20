@@ -44,6 +44,11 @@ class Mob extends Entity {
      */
     name;
 
+    /**
+     * @type {number}
+     */
+    timedif;
+
     constructor(name, rarity, x, y) {
         super(new CollisionBox("c", x, y, Excel.dat.mob[name].radius * Excel.dat.rarity[rarity].size), Excel.dat.mob[name].friction, Excel.dat.mob[name].type);
         this.name = name;
@@ -56,6 +61,8 @@ class Mob extends Entity {
         this.rarity = rarity;
 
         this.effect = new Effect(Excel.dat.mob[name].effect, Excel.dat.rarity[rarity]);
+
+        this.timedif = Math.floor(Math.random() * Date.now());
     }
 
     /**

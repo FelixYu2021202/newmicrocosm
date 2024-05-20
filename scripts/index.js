@@ -286,18 +286,34 @@ function start() {
                             let y = ev.clientY - rect.top - innerHeight / 2;
                             if (ws.readyState == ws.OPEN) {
                                 ws.send(JSON.stringify({
+                                    message: "move",
                                     x: x / innerWidth * drawerdata.windowwidth,
                                     y: y / innerWidth * drawerdata.windowwidth
                                 }));
                             }
                         }
 
+                        /**
+                         * @param {KeyboardEvent} ev
+                         */
+                        function keyHandler(ev) {
+                            if (ev.key == "Enter") {
+                                let ms = prompt("Chat");
+                                ws.send(JSON.stringify({
+                                    message: "chat",
+                                    text: ms
+                                }));
+                            }
+                        }
+
                         ws.onopen = function (ev) {
                             addEventListener("mousemove", mouseHandler);
+                            addEventListener("keydown", keyHandler);
                         }
 
                         ws.onclose = function (ev) {
                             removeEventListener("mousemove", mouseHandler);
+                            removeEventListener("keydown", keyHandler);
                             setTimeout(() => {
                                 gotoPage("tagStart");
                             }, 200);
@@ -320,20 +336,20 @@ function start() {
                                     if (mob.rarity < 8) {
                                         return;
                                     }
-                                    ctx.fillStyle = Excel.dat.rarity[mob.rarity].color;
+                                    ctx.fillStyle = "black";
                                     ctx.beginPath();
                                     ctx.moveTo(...drawer
-                                        .transform(new Force(200, 0)
+                                        .transform(new Force(500, 0)
                                             .plus(player.collisionBox)
                                             .rotate(new Force(mob.collisionBox)
                                                 .angle(camera), camera), camera));
                                     ctx.lineTo(...drawer
-                                        .transform(new Force(150, -50)
+                                        .transform(new Force(450, -50)
                                             .plus(player.collisionBox)
                                             .rotate(new Force(mob.collisionBox)
                                                 .angle(camera), camera), camera));
                                     ctx.lineTo(...drawer
-                                        .transform(new Force(150, 50)
+                                        .transform(new Force(450, 50)
                                             .plus(player.collisionBox)
                                             .rotate(new Force(mob.collisionBox)
                                                 .angle(camera), camera), camera));
@@ -347,6 +363,28 @@ function start() {
                                         }
                                         petaldrawer(ptl, camera);
                                     });
+                                    if (pl.name == player.name) {
+                                        return;
+                                    }
+
+                                    ctx.fillStyle = "red";
+                                    ctx.beginPath();
+                                    ctx.moveTo(...drawer
+                                        .transform(new Force(400, 0)
+                                            .plus(player.collisionBox)
+                                            .rotate(new Force(pl.collisionBox)
+                                                .angle(camera), camera), camera));
+                                    ctx.lineTo(...drawer
+                                        .transform(new Force(350, -50)
+                                            .plus(player.collisionBox)
+                                            .rotate(new Force(pl.collisionBox)
+                                                .angle(camera), camera), camera));
+                                    ctx.lineTo(...drawer
+                                        .transform(new Force(350, 50)
+                                            .plus(player.collisionBox)
+                                            .rotate(new Force(pl.collisionBox)
+                                                .angle(camera), camera), camera));
+                                    ctx.fill();
                                 });
                                 curdata.fakes.forEach(wall => {
                                     drawer.rect(

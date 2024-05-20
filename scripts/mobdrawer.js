@@ -24,7 +24,7 @@ const mobdrawers = {
         let { x, y, r } = mc;
         r *= 0.9;
         drawer.ctx.lineWidth = r * 0.1 * camera.rate;
-        let rot = Date.now() / 1500; // 1.5s a rad
+        let rot = (Date.now() - mob.timedif) / 1500; // 1.5s a rad
         drawer.line(
             ...drawer.transform(new Force(x - r, y - r).rotate(rot, mc), camera),
             ...drawer.transform(new Force(x + r, y - r).rotate(rot, mc), camera),
@@ -45,7 +45,7 @@ const mobdrawers = {
             ...drawer.transform(new Force(x + r, y + r).rotate(rot, mc), camera),
             "yellow"
         );
-        rot = Date.now() / 3500; // 3.5s a rad
+        rot = (Date.now() - mob.timedif) / 3500; // 3.5s a rad
         drawer.line(
             ...drawer.transform(new Force(x - r, y - r).rotate(rot, mc), camera),
             ...drawer.transform(new Force(x + r, y - r).rotate(rot, mc), camera),

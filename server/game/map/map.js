@@ -143,36 +143,32 @@ let exertMap = {
     }
 };
 
-function gen(size, rate, fakerate) {
-    if (!rate) {
-        rate = 0.23;
-    }
-    if (!fakerate) {
-        fakerate = 0.01;
-    }
-    let map = [
-        "#".repeat(size)
+function gen() {
+    return [
+        "####################",
+        "#          #       #",
+        "#          #       #",
+        "#      #   #       #",
+        "#     ##   #       #",
+        "#      #   #       #",
+        "##     #   #       #",
+        "#      #   #       #",
+        "#     ##   #       #",
+        "#     #    #       #",
+        "#     #    #       #",
+        "#     ######       #",
+        "#     #            #",
+        "#     #            #",
+        "#     #            #",
+        "#     ######       #",
+        "#                  #",
+        "#                  #",
+        "#                  #",
+        "####################"
     ];
-    for (let i = 2; i < size; i++) {
-        let row = "#";
-        for (let j = 2; j < size; j++) {
-            if (Math.random() <= rate && (i != 2 || j != 2)) {
-                row = row.concat("#");
-            }
-            else if (Math.random() <= fakerate && (i != 2 || j != 2)) {
-                row = row.concat("?");
-            }
-            else {
-                row = row.concat(".");
-            }
-        }
-        map.push(row.concat("#"));
-    }
-    map.push("#".repeat(size));
-    return map;
 }
 
-class GameTag extends Game {
+class GameMap extends Game {
     /**
      * @param {string} rid
      */
@@ -184,34 +180,33 @@ class GameTag extends Game {
 
         this.size = 20;
 
-        let map = Wall.buildFromMap(gen(this.size));
+        let map = Wall.buildFromMap(gen());
         this.walls = map.wall;
-        this.fakes = map.fake;
         let self = this;
-        function spawnChest() {
-            let rar = 0;
-            for (let i = 1; i < 15; i++) {
-                if (Math.random() <= Excel.dat.tag[i].chest) {
-                    rar = i;
-                }
-            }
-            self.summonChest(rar);
+        // function spawnChest() {
+        //     let rar = 0;
+        //     for (let i = 1; i < 15; i++) {
+        //         if (Math.random() <= Excel.dat.tag[i].chest) {
+        //             rar = i;
+        //         }
+        //     }
+        //     self.summonChest(rar);
 
-            setTimeout(spawnChest, 8000);
-        }
-        spawnChest();
-        function spawnBob() {
-            let rar = 0;
-            for (let i = 1; i < 15; i++) {
-                if (Math.random() <= Excel.dat.tag[i].bob) {
-                    rar = i;
-                }
-            }
-            self.summonBob(rar);
+        //     setTimeout(spawnChest, 8000);
+        // }
+        // spawnChest();
+        // function spawnBob() {
+        //     let rar = 0;
+        //     for (let i = 1; i < 15; i++) {
+        //         if (Math.random() <= Excel.dat.tag[i].bob) {
+        //             rar = i;
+        //         }
+        //     }
+        //     self.summonBob(rar);
 
-            setTimeout(spawnBob, 7500);
-        }
-        spawnBob();
+        //     setTimeout(spawnBob, 7500);
+        // }
+        // spawnBob();
     }
 
     summonBob(rarity) {
@@ -299,7 +294,7 @@ class GameTag extends Game {
     }
 }
 
-module.exports = GameTag;
+module.exports = GameMap;
 module.exports.dealMap = dealMap;
 module.exports.hitMap = hitMap;
 module.exports.exertMap = exertMap;
